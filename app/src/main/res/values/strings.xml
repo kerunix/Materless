@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Matterless</string>
+    
+    
+    <!-- MainActivity -->
+    
+    <string name="buttonConfigureEventsText">Gérer mes événements</string>
+    <string name="buttonMyProfileText">Mon profil</string>
+
+    <!-- MessageListActivity -->
+
+    <string name="textViewMyEventsText">Mes événements</string>
+    <string name="buttonAddEventText">Ajouter un événement</string>
 </resources>
