@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="matterless.fr.wcs.matterless.MainActivity"
-    android:background="@drawable/gradiant">
+    android:background="@drawable/gradiantalt">
 
     <ImageView
         android:id="@+id/imageViewLogoMainActivity"
         android:layout_width="378dp"
         android:layout_height="147dp"
-        app:srcCompat="@drawable/matterless"
+        app:srcCompat="@drawable/materlesswhite"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
