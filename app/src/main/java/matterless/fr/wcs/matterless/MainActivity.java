@@ -9,10 +9,18 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private Button buttonConfigureEvents;
+    private Button buttonMyProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        buttonConfigureEvents = (Button) findViewById(R.id.buttonConfigureEvents);
+        buttonConfigureEvents.setOnClickListener(this);
+        buttonMyProfile = (Button)findViewById(R.id.buttonMyProfile);
+        buttonMyProfile.setOnClickListener(this);
 
 
 
