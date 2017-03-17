@@ -16,7 +16,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".FriendListActivity" />
         <activity android:name=".MessageListActivity" />
         <activity android:name=".MessageSettingActivity"></activity>
     </application>
