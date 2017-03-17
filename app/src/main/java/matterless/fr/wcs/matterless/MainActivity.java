@@ -23,11 +23,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()){
             case R.id.buttonConfigureEvents:
-                Intent intent = new Intent(MainActivity.this, MessageListActivity.class);
-                startActivity(intent);
+                Intent intentToMessageList = new Intent(MainActivity.this, MessageListActivity.class);
+                startActivity(intentToMessageList);
                 break;
             case R.id.buttonMyProfile:
-                Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intentToSettings = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intentToSettings);
                 break;
         }
 
