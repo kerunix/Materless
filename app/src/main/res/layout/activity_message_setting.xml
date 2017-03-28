@@ -21,38 +21,17 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="171dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewMesageContentDescription" />
-
-    <TextClock
-        android:id="@+id/textClock2"
-        android:layout_width="135dp"
-        android:layout_height="68dp"
-        android:layout_marginRight="28dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMyEventsSettings"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewMesageContentDescription" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="133dp"
-        android:layout_height="69dp"
-        android:text="TextView"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/textClock2"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.236"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/textViewMyEventsSettings"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewMesageContentDescription" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/editTextMessageContent"
@@ -61,12 +40,15 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/editTextMessageContentHintText"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteEvent"
+        android:textColor="@color/white"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteEvent" />
 
     <Button
         android:id="@+id/buttonDeleteEvent"
@@ -74,10 +56,13 @@
         android:layout_height="wrap_content"
         android:text="@string/buttonDeleteEventText"
         android:textColor="@color/white"
-        tools:layout_editor_absoluteX="8dp"
+        android:background="@drawable/buttonshape"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/buttonshape"/>
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/textViewMesageContentDescription"
@@ -85,12 +70,35 @@
         android:layout_height="48dp"
         android:text="@string/textViewMesageContentDescriptionText"
         android:textColor="@color/white"
-        android:layout_marginBottom="29dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextMessageContent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.511" />
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextMessageContent" />
+
+    <Button
+        android:id="@+id/buttonTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buttonTimePickerText"
+        android:background="@drawable/spinner_item_shape"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewMesageContentDescription" />
+
+    <Button
+        android:id="@+id/buttonSelectDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/buttonshape"
+        android:text="Button"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="78dp" />
 
 </android.support.constraint.ConstraintLayout>
