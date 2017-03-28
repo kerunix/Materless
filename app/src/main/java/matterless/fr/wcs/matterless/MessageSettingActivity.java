@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.view.View;
+import android.widget.Button;
+
 import android.widget.TimePicker;
 
 import java.lang.reflect.Array;
@@ -24,7 +26,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
     private String[] mDayList;
     private Button buttonTimePicker;
     private Button buttonSelectDay;
-
+    private Button buttonDeleteEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,9 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                 mTimePicker.show();
             }
         });
+        buttonDeleteEvent = (Button) findViewById(R.id.buttonDeleteEvent);
+        buttonDeleteEvent.setOnClickListener(this);
+
     }
 
     @Override
@@ -85,6 +90,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             case R.id.buttonDeleteEvent:
                 Intent intentDeleteMessage = new Intent(MessageSettingActivity.this, MessageListActivity.class);
                 startActivity(intentDeleteMessage);
+                finish();
                 break;
         }
     }

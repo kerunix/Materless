@@ -9,8 +9,11 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button buttonConfigureEvents;
-    Button buttonMyProfile;
+
+ 
+    private Button buttonConfigureEvents;
+    private Button buttonMyProfile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +21,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         buttonConfigureEvents = (Button) findViewById(R.id.buttonConfigureEvents);
-        buttonMyProfile = (Button) findViewById(R.id.buttonMyProfile);
+
+        buttonConfigureEvents.setOnClickListener(this);
+        buttonMyProfile = (Button)findViewById(R.id.buttonMyProfile);
+        buttonMyProfile.setOnClickListener(this);
     }
 
     @Override
