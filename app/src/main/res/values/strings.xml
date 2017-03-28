@@ -24,4 +24,8 @@
     <string name="textViewUserNameText">Username</string>
     <string name="useGeolocSwitchTest">Activer la géolocalisation</string>
     <string name="buttonLogOutText">Se déconnecter</string>
+    <string name="buttonLogInText">Se connecter</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
 </resources>
