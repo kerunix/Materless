@@ -48,10 +48,10 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonDeleteEvent" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonCreateEvent" />
 
     <Button
-        android:id="@+id/buttonDeleteEvent"
+        android:id="@+id/buttonCreateEvent"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:text="@string/buttonDeleteEventText"
