@@ -1,8 +1,10 @@
 package matterless.fr.wcs.matterless;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +38,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextPassword;
     private Button buttonlog;
     private String authToken;
+    private SharedPreferences properties;
+    private SharedPreferences.Editor editor;
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
+    public final String EMAIL = "EMAIL";
+    public final String PASSWORD = "PASSWORD";
+    public final String TOKEN = "TOKEN";
+    public final String USER_NAME = "USER_NAME";
+    public final String IMAGE_URL = "IMAGE_URL";
     private ImageView imageViewProfilePicture;
 
     @Override
@@ -53,6 +62,53 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
 
+        properties = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = properties.edit();
+
+        if(properties.getString(EMAIL, null) != null){
+
+            textViewEmail.setVisibility(View.GONE);
+            textViewPassword.setVisibility(View.GONE);
+            editTextEmail.setVisibility(View.GONE);
+            editTextPassword.setVisibility(View.GONE);
+            textViewUserName.setVisibility(View.VISIBLE);
+            imageViewProfilePicture.setVisibility(View.VISIBLE);
+            buttonlog.setText(R.string.buttonLogOutText);
+
+            textViewUserName.setText(properties.getString(USER_NAME, "jean louis"));
+
+            MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
+            Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + properties.getString(TOKEN,null), properties.getString(IMAGE_URL, null));
+            callImageUrl.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> responseImageUrl) {
+                    if (responseImageUrl.isSuccessful()) {
+
+                        textViewUserName.setText(properties.getString(USER_NAME,null));
+
+                        boolean writtenToDisk = writeResponseBodyToDisk(responseImageUrl.body());
+                        if(writtenToDisk) {
+                            File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
+                            Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                            imageViewProfilePicture.setImageBitmap(myBitmap);
+                            Toast.makeText(SettingsActivity.this, "image enregistré", Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(SettingsActivity.this, "ta ton image", Toast.LENGTH_SHORT).show();
+
+
+
+                    } else {
+                        Toast.makeText(SettingsActivity.this, "Foireux", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
+
 
     }
 
@@ -60,7 +116,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonLog:
-                if(editTextEmail != null && editTextPassword != null && authToken == null){
+                if(editTextEmail != null && editTextPassword != null && properties.getString(TOKEN, null) == null){
                     usersLogin = new UsersLogin(editTextEmail.getText().toString(), editTextPassword.getText().toString());
                     MattermostService mattermostService =
                             ServiceGenerator.RETROFIT.create(MattermostService.class);
@@ -89,9 +145,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                             textViewUserName.setVisibility(View.VISIBLE);
                                             imageViewProfilePicture.setVisibility(View.VISIBLE);
                                             buttonlog.setText(R.string.buttonLogOutText);
-                                            userProfile = responseUser.body();
 
+                                            userProfile = responseUser.body();
                                             String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
+
+                                            editor.putString(EMAIL, userProfile.getEmail());
+                                            editor.putString(PASSWORD, userProfile.getPassword());
+                                            editor.putString(TOKEN, authToken);
+                                            editor.putString(IMAGE_URL, imageUrl);
+                                            editor.putString(USER_NAME, userProfile.getUsername());
+                                            editor.commit();
 
                                             MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
                                             Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + authToken, imageUrl);
@@ -143,7 +206,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                             } else {
                                 // error response, no access to resource?
-                                Toast.makeText(SettingsActivity.this, "failur", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SettingsActivity.this, "pk c'est là", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -156,9 +219,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     });
                 }
 
-                else if (authToken != null){
+                else if (properties.getString(TOKEN,"error") != null){
 
-                    authToken = null;
                     textViewEmail.setVisibility(View.VISIBLE);
                     textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
@@ -168,6 +230,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     textViewUserName.setVisibility(View.INVISIBLE);
                     imageViewProfilePicture.setVisibility(View.INVISIBLE);
                     buttonlog.setText(R.string.buttonLogInText);
+                    editor.clear();
+                    editor.commit();
                 }
         }
 
