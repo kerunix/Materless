@@ -3,26 +3,37 @@ package matterless.fr.wcs.matterless;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Button buttonConfigureEvents;
+    Button buttonMyProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button buttonConfigureEvents = (Button) findViewById(R.id.buttonConfigureEvents);
+        buttonConfigureEvents = (Button) findViewById(R.id.buttonConfigureEvents);
+        buttonMyProfile = (Button) findViewById(R.id.buttonMyProfile);
+    }
 
-        buttonConfigureEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MessageListActivity.class);
-                startActivity(intent);
-            }
-        });
+    @Override
+    public void onClick(View v) {
 
+        switch (v.getId()){
+            case R.id.buttonConfigureEvents:
+                Intent intentToMessageList = new Intent(MainActivity.this, MessageListActivity.class);
+                startActivity(intentToMessageList);
+                break;
+            case R.id.buttonMyProfile:
+                Intent intentToSettings = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intentToSettings);
+                break;
+        }
 
     }
 }

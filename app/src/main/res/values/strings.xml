@@ -27,6 +27,8 @@
         <item>Samedi</item>
         <item>Dimanche</item>
     </string-array>
+    <string name="buttonTimePickerText">Heure</string>
+    <string name="buttonSelectDayText">Jours</string>
 
     <!-- SettingsActivity -->
 
