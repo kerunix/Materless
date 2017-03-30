@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.Button;
+
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -35,7 +37,6 @@ public class MessageSettingActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference mRef;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class MessageSettingActivity extends AppCompatActivity {
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
         buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
+          buttonCreateEvent.setOnClickListener();
 
         mMessageName = (EditText) findViewById(R.id.editTextMessageName);
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
@@ -119,14 +121,16 @@ public class MessageSettingActivity extends AppCompatActivity {
                 mTimePicker.show();
             }
         });
+    }
 
-        buttonCreateEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
 
+        switch (v.getId()){
+            case R.id.buttonCreateEvent:
                 Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                 mRef.push().setValue(message);
-            }
-        });
+                finish();
+        }
     }
 }

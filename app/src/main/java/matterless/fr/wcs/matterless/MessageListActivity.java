@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Button;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -20,6 +21,9 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
     private FirebaseDatabase mDatabase;
     Query mRef;
 
+
+    private Button buttonAddEvent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +37,8 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         mAdapter = new CustomListAdapter(mRef, MessageListActivity.this, R.layout.message_list_item);
 
 
+        buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
+        buttonAddEvent.setOnClickListener(this);
     }
 
     @Override
@@ -42,6 +48,7 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
             case R.id.buttonAddEvent:
                 Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
                 startActivity(intentToMessageSetting);
+                finish();
                 break;
         }
     }
