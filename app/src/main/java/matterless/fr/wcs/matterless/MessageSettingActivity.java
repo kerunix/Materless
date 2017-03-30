@@ -2,6 +2,7 @@ package matterless.fr.wcs.matterless;
 
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MessageSettingActivity extends AppCompatActivity {
+public class MessageSettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String[] mDayList;
     private Button buttonTimePicker;
@@ -43,12 +44,12 @@ public class MessageSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_setting);
 
         database = FirebaseDatabase.getInstance();
-        mRef = database.getReference();
+        mRef = database.getReference("Messages");
 
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
         buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
-          buttonCreateEvent.setOnClickListener();
+          buttonCreateEvent.setOnClickListener(this);
 
         mMessageName = (EditText) findViewById(R.id.editTextMessageName);
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
@@ -72,12 +73,10 @@ public class MessageSettingActivity extends AppCompatActivity {
 
                         if (isChecked) {
                             finalDays.add(mDayList[which]);
-                            Toast.makeText(MessageSettingActivity.this, "activé", Toast.LENGTH_SHORT).show();
                         }
 
                         else if (!isChecked) {
                             finalDays.remove(mDayList[which]);
-                            Toast.makeText(MessageSettingActivity.this, "enlevé", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -88,6 +87,7 @@ public class MessageSettingActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        buttonSelectDay.setText(finalDays.toString());
                         dialog.dismiss();
                     }
                 });
@@ -113,11 +113,11 @@ public class MessageSettingActivity extends AppCompatActivity {
                 mTimePicker = new TimePickerDialog(MessageSettingActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        buttonTimePicker.setText(timeHour + ":" + timeMinute);
                         timeHour = selectedHour;
                         timeMinute =selectedMinute;
                     }
                 }, hour, minute, true);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
             }
         });
@@ -130,7 +130,8 @@ public class MessageSettingActivity extends AppCompatActivity {
             case R.id.buttonCreateEvent:
                 Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                 mRef.push().setValue(message);
-                finish();
+                Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
+                startActivity(intent);
         }
     }
 }

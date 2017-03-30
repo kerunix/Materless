@@ -15,6 +15,8 @@ public class Message {
     private int mTimeHour;
     private String mMessageContent;
 
+    private Message(){};
+
     public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent) {
 
         mName = name;
@@ -24,28 +26,43 @@ public class Message {
         mMessageContent = messageContent;
     }
 
-    public List<String> getDays(){
+    public String getmName() {
+        return mName;
+    }
 
+    public void setmName(String mName) {
+        this.mName = mName;
+    }
+
+    public ArrayList<String> getmDays() {
         return mDays;
     }
 
-    public int getmTimeMinute() {
+    public void setmDays(ArrayList<String> mDays) {
+        this.mDays = mDays;
+    }
 
+    public int getmTimeMinute() {
         return mTimeMinute;
     }
 
-    public int getTimeHour(){
+    public void setmTimeMinute(int mTimeMinute) {
+        this.mTimeMinute = mTimeMinute;
+    }
 
+    public int getmTimeHour() {
         return mTimeHour;
     }
 
-    public String getMessageContent(){
+    public void setmTimeHour(int mTimeHour) {
+        this.mTimeHour = mTimeHour;
+    }
 
+    public String getmMessageContent() {
         return mMessageContent;
     }
 
-    public String getName() {
-
-        return mName;
+    public void setmMessageContent(String mMessageContent) {
+        this.mMessageContent = mMessageContent;
     }
 }

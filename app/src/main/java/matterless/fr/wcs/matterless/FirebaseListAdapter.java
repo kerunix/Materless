@@ -16,13 +16,13 @@ import com.google.firebase.database.DatabaseError;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FirebaseListAdapter<T> extends BaseAdapter {
+public abstract class FirebaseListAdapter<Message> extends BaseAdapter {
 
     private Query mRef;
-    private Class<T> mModelClass;
+    private Class<Message> mModelClass;
     private int mLayout;
     private LayoutInflater mInflater;
-    private List<T> mModels;
+    private List<Message> mModels;
     private List<String> mKeys;
     private ChildEventListener mListener;
 
@@ -35,19 +35,19 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      *                    instance of the corresponding view with the data from an instance of mModelClass.
      * @param activity    The activity containing the ListView
      */
-    public FirebaseListAdapter(Query mRef, Class<T> mModelClass, int mLayout, Activity activity) {
+    public FirebaseListAdapter(Query mRef, Class<Message> mModelClass, int mLayout, Activity activity) {
         this.mRef = mRef;
         this.mModelClass = mModelClass;
         this.mLayout = mLayout;
         mInflater = activity.getLayoutInflater();
-        mModels = new ArrayList<T>();
+        mModels = new ArrayList<Message>();
         mKeys = new ArrayList<String>();
         // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
         mListener = this.mRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
 
-                T model = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
+                Message model = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 String key = dataSnapshot.getKey();
 
                 // Insert into the correct location, based on previousChildName
@@ -73,7 +73,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 // One of the mModels changed. Replace it in our list and name mapping
                 String key = dataSnapshot.getKey();
-                T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
+                Message newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 int index = mKeys.indexOf(key);
 
                 mModels.set(index, newModel);
@@ -99,7 +99,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
                 // A model changed position in the list. Update our list accordingly
                 String key = dataSnapshot.getKey();
-                T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
+                Message newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 int index = mKeys.indexOf(key);
                 mModels.remove(index);
                 mKeys.remove(index);
@@ -156,7 +156,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             view = mInflater.inflate(mLayout, viewGroup, false);
         }
 
-        T model = mModels.get(i);
+        Message model = mModels.get(i);
         // Call out to subclass to marshall this model into the provided view
         populateView(view, model);
         return view;
@@ -171,5 +171,5 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param v     The view to populate
      * @param model The object containing the data used to populate the view
      */
-    protected abstract void populateView(View v, T model);
+    protected abstract void populateView(View v, Message model);
 }

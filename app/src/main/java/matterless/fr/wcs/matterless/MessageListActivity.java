@@ -30,15 +30,17 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_message_list);
 
         mDatabase = FirebaseDatabase.getInstance();
-        mRef = mDatabase.getReference();
+        mRef = mDatabase.getReference("Messages");
 
         mListViewMessage = (ListView) findViewById(R.id.listViewMessage);
 
         mAdapter = new CustomListAdapter(mRef, MessageListActivity.this, R.layout.message_list_item);
 
+        mListViewMessage.setAdapter(mAdapter);
 
         buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
         buttonAddEvent.setOnClickListener(this);
+
     }
 
     @Override

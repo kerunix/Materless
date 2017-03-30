@@ -5,7 +5,10 @@
 
     <TextView
         android:id="@+id/textViewMessageName"
+        android:textColor="@color/white"
+        android:textSize="@dimen/activity_horizontal_margin"
+        android:background="@drawable/buttonshape"
+        android:textAllCaps="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

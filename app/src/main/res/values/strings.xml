@@ -14,10 +14,11 @@
 
     <!-- MessageSettingsActivity -->
 
-    <string name="textViewMyEventsSettingsText">Arrivée à l\'école</string>
+    <string name="textViewMyEventsSettingsText">Créé ton message</string>
     <string name="textViewMesageContentDescriptionText">Entre le message que tu souhaites ci dessous, tu peux ajouter des liens vers des images, des vidéos, des GIFs animés, lâche-toi !!</string>
     <string name="editTextMessageContentHintText">Message</string>
-    <string name="buttonDeleteEventText">Supprimer cet événement</string>
+    <string name="editTextNameHint">Choisis le nom de ton message</string>
+    <string name="buttonCreateEventText">Ajouter cet événement</string>
     <string-array name="daysOfWeekArray">
         <item>Lundi</item>
         <item>Mardi</item>
