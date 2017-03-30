@@ -9,21 +9,6 @@
     android:background="@drawable/gradiantalt">
 
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="251dp"
-        android:layout_height="325dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="93dp"
-        app:layout_constraintHorizontal_bias="0.504" />
-
     <Button
         android:id="@+id/buttonAddEvent"
         android:layout_width="244dp"
@@ -58,6 +43,21 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="392dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonAddEvent" />
+
+    <ListView
+        android:id="@+id/listViewMessage"
+        android:layout_width="251dp"
+        android:layout_height="325dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_editor_absoluteY="93dp" />
 
 
 </android.support.constraint.ConstraintLayout>

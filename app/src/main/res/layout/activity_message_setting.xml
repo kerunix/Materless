@@ -23,15 +23,12 @@
         android:textStyle="bold"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <EditText
         android:id="@+id/editTextMessageContent"
@@ -47,8 +44,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCreateEvent" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMesageContentDescription" />
 
     <Button
         android:id="@+id/buttonCreateEvent"
@@ -59,10 +56,12 @@
         android:background="@drawable/buttonshape"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMessageContent" />
 
     <TextView
         android:id="@+id/textViewMesageContentDescription"
@@ -76,8 +75,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextMessageContent" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTimePicker" />
 
     <Button
         android:id="@+id/buttonTimePicker"
@@ -85,12 +84,12 @@
         android:layout_height="wrap_content"
         android:text="@string/buttonTimePickerText"
         android:background="@drawable/spinner_item_shape"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSelectDay"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewMesageContentDescription" />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/buttonSelectDay"
@@ -98,7 +97,25 @@
         android:layout_height="wrap_content"
         android:background="@drawable/buttonshape"
         android:text="Button"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="78dp" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMessageName" />
+
+    <EditText
+        android:id="@+id/editTextMessageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMyEventsSettings"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

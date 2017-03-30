@@ -25,10 +25,13 @@ public class MessageSettingActivity extends AppCompatActivity {
     private Button buttonTimePicker;
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
+    private EditText mMessageName;
     private EditText mMessageContent;
+
     private ArrayList<String> finalDays = new ArrayList<>();
     private int timeMinute;
     private int timeHour;
+
     private FirebaseDatabase database;
     private DatabaseReference mRef;
 
@@ -45,6 +48,7 @@ public class MessageSettingActivity extends AppCompatActivity {
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
         buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
 
+        mMessageName = (EditText) findViewById(R.id.editTextMessageName);
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
 
         mDayList = getResources().getStringArray(R.array.daysOfWeekArray);
@@ -67,6 +71,11 @@ public class MessageSettingActivity extends AppCompatActivity {
                         if (isChecked) {
                             finalDays.add(mDayList[which]);
                             Toast.makeText(MessageSettingActivity.this, "activé", Toast.LENGTH_SHORT).show();
+                        }
+
+                        else if (!isChecked) {
+                            finalDays.remove(mDayList[which]);
+                            Toast.makeText(MessageSettingActivity.this, "enlevé", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -115,7 +124,7 @@ public class MessageSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Message message = new Message(finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
+                Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                 mRef.push().setValue(message);
             }
         });
