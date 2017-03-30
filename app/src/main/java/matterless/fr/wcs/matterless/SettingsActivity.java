@@ -75,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             while( (c = mfileInputStream.read()) != -1){
                 temp = temp + Character.toString((char)c);
             }
-            String[] arr = temp.split(" ");
+            String[] arr = temp.split("|");
             muserCredentials = new UserCredentials(arr);
             mfileInputStream.close();
         } catch (FileNotFoundException e) {
@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             e.printStackTrace();
         }
 
-        if(muserCredentials.getEmail() != null){
+        if(muserCredentials != null){
 
             textViewEmail.setVisibility(View.GONE);
             textViewPassword.setVisibility(View.GONE);
@@ -135,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonLog:
-                if(editTextEmail != null && editTextPassword != null && muserCredentials.getToken() == null){
+                if(editTextEmail != null && editTextPassword != null && muserCredentials == null){
                     usersLogin = new UsersLogin(editTextEmail.getText().toString(), editTextPassword.getText().toString());
                     MattermostService mattermostService =
                             ServiceGenerator.RETROFIT.create(MattermostService.class);
