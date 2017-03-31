@@ -22,16 +22,16 @@ public class UserCredentials {
     }
 
     public UserCredentials (String[] stringArray){
-        this.email = stringArray[5];
-        this.password = stringArray[4];
-        this.token = stringArray[3];
-        this.imageUrl = stringArray[2];
-        this.userName = stringArray[1];
+        this.email = stringArray[0];
+        this.password = stringArray[1];
+        this.token = stringArray[2];
+        this.imageUrl = stringArray[3];
+        this.userName = stringArray[4];
 
     }
 
     public String oneString(){
-        return this.email+ "|"+this.password+"|"+this.token+"|"+this.imageUrl+"|"+this.userName;
+        return this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
     }
 
 
