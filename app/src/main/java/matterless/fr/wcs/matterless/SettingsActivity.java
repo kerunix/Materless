@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                             imageViewProfilePicture.setImageBitmap(myBitmap);
-                            Toast.makeText(SettingsActivity.this, "image enregistré", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, "image enregistré avec un le token du intenral storage", Toast.LENGTH_SHORT).show();
                         }
                         Toast.makeText(SettingsActivity.this, "ta ton image", Toast.LENGTH_SHORT).show();
 

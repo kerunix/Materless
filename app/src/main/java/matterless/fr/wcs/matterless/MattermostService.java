@@ -21,4 +21,7 @@ public interface MattermostService {
 
     @GET
     Call<ResponseBody> getProfilePicture(@Header("Authorization") String token, @Url String url);
+
+    @POST("teams/3zch5boyc3ds5kgiyqidmucjbc/channels/bfsnn43zfpne3m877s66a454ih/posts/create")
+    Call<Post> sendPost(@Header("Authorization") String token, @Body Post post);
 }

@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    public static final String API_BASE_URL = " https://chat.wildcodeschool.fr/api/v3/";
+    public static final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
