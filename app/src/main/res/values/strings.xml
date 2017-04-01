@@ -6,6 +6,7 @@
 
     <string name="buttonConfigureEventsText">Gérer mes événements</string>
     <string name="buttonMyProfileText">Mon profil</string>
+    <string name="authentication_needed">"Clique d'abord sur MON PROFIL pour t'authentifier"</string>
 
     <!-- MessageListActivity -->
 
