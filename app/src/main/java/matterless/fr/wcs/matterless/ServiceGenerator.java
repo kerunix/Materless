@@ -4,10 +4,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by apprenti on 17/03/17.
- */
-
 public class ServiceGenerator {
 
     public static final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";

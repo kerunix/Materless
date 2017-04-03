@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Button;
 
@@ -17,9 +18,12 @@ import java.util.List;
 
 public class MessageListActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     public final String FILE_NAME = "FILE_NAME";
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
+
+    private Intent intent;
 
     private ListView mListViewMessage;
 
@@ -46,6 +50,30 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
         buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
         buttonAddEvent.setOnClickListener(this);
+
+        mListViewMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
+                Message message = (Message) mAdapter.getItem(position);
+
+
+
+                intent.putExtra("message", message);
+
+
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        intent = getIntent();
+
+        if (intent.hasExtra("deletePosition")) {
+
+
+        }
 
     }
 
