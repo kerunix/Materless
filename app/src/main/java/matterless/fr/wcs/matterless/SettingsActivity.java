@@ -151,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                 userProfile = responseUser.body();
                                                 String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
 
-                                                UserCredentials userCredentials = new UserCredentials(userProfile.getEmail(),
+                                                UserCredentials userCredentials = new UserCredentials(userProfile.getId(), userProfile.getEmail(),
                                                         editTextPassword.getText().toString(),
                                                         authToken,
                                                         imageUrl,
@@ -286,7 +286,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                             userProfile = responseUser.body();
                                             String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
 
-                                             muserCredentials = new UserCredentials(userProfile.getEmail(),
+                                             muserCredentials = new UserCredentials(userProfile.getId(), userProfile.getEmail(),
                                                     editTextPassword.getText().toString(),
                                                     authToken,
                                                     imageUrl,

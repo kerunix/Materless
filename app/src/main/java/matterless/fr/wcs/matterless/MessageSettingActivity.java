@@ -18,11 +18,16 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class MessageSettingActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public final String FILE_NAME = "FILE_NAME";
 
     private String[] mDayList;
     private Button buttonTimePicker;
@@ -38,13 +43,15 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
     private FirebaseDatabase database;
     private DatabaseReference mRef;
 
+    private FileInputStream mfileInputStream;
+    private UserCredentials muserCredentials;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_setting);
 
         database = FirebaseDatabase.getInstance();
-        mRef = database.getReference("Messages");
 
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
@@ -121,6 +128,36 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                 mTimePicker.show();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            mfileInputStream = openFileInput(FILE_NAME);
+            int c;
+            String temp="";
+            while( (c = mfileInputStream.read()) != -1){
+                temp = temp + Character.toString((char)c);
+            }
+            String[] arr = temp.split("\\|");
+            muserCredentials = new UserCredentials(arr);
+            mfileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mRef = database.getReference("Messages/"+muserCredentials.getUserID());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        muserCredentials = null;
     }
 
     @Override

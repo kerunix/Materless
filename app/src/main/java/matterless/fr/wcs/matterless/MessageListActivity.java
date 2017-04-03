@@ -10,9 +10,16 @@ import android.widget.Button;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 public class MessageListActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public final String FILE_NAME = "FILE_NAME";
+    private FileInputStream mfileInputStream;
+    private UserCredentials muserCredentials;
 
     private ListView mListViewMessage;
 
@@ -30,7 +37,6 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_message_list);
 
         mDatabase = FirebaseDatabase.getInstance();
-        mRef = mDatabase.getReference("Messages");
 
         mListViewMessage = (ListView) findViewById(R.id.listViewMessage);
 
@@ -41,6 +47,36 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
         buttonAddEvent.setOnClickListener(this);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            mfileInputStream = openFileInput(FILE_NAME);
+            int c;
+            String temp="";
+            while( (c = mfileInputStream.read()) != -1){
+                temp = temp + Character.toString((char)c);
+            }
+            String[] arr = temp.split("\\|");
+            muserCredentials = new UserCredentials(arr);
+            mfileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        muserCredentials = null;
     }
 
     @Override
