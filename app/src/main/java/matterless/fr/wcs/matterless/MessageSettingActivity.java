@@ -3,6 +3,7 @@ package matterless.fr.wcs.matterless;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,18 +21,23 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MessageSettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String[] mDayList;
+
     private Button buttonTimePicker;
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
+
     private EditText mMessageName;
     private EditText mMessageContent;
 
-    private ArrayList<String> finalDays = new ArrayList<>();
+    private ArrayList<String> finalDays;
     private int timeMinute;
     private int timeHour;
 
@@ -55,6 +61,9 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
 
         mDayList = getResources().getStringArray(R.array.daysOfWeekArray);
+        finalDays = new ArrayList<>();
+
+
         buttonSelectDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

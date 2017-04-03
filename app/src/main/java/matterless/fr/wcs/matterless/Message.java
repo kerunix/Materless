@@ -1,13 +1,13 @@
 package matterless.fr.wcs.matterless;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by keru on 28/03/17.
- */
-
-public class Message {
+class Message implements Parcelable {
 
     private String mName;
     private ArrayList<String> mDays;
@@ -15,7 +15,7 @@ public class Message {
     private int mTimeHour;
     private String mMessageContent;
 
-    private Message(){};
+    private  Message(){}
 
     public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent) {
 
@@ -25,6 +25,18 @@ public class Message {
         mTimeHour = timeHour;
         mMessageContent = messageContent;
     }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
     public String getmName() {
         return mName;
@@ -64,5 +76,32 @@ public class Message {
 
     public void setmMessageContent(String mMessageContent) {
         this.mMessageContent = mMessageContent;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(mName);     //name
+        List<String> arr = mDays.subList(0, mDays.size());
+        dest.writeStringList(arr);   //days
+        dest.writeInt(mTimeMinute); //minute
+        dest.writeInt(mTimeHour); //hour
+        dest.writeString(mMessageContent);    //content
+    }
+
+    private Message(Parcel in){
+
+        mName = in.readString();
+        ArrayList<String> arr = new ArrayList<String>();
+        in.readStringList(arr);
+        mDays = arr;
+        mTimeMinute = in.readInt();
+        mTimeHour = in.readInt();
+        mMessageContent = in.readString();
     }
 }
