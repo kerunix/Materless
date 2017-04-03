@@ -11,9 +11,11 @@ public class UserCredentials {
     private String token;
     private String imageUrl;
     private String userName;
+    private String userID;
 
-    public UserCredentials(String email, String password, String token, String imageUrl, String userName){
+    public UserCredentials(String userID, String email, String password, String token, String imageUrl, String userName){
 
+        this.userID = userID;
         this.email = email;
         this.password = password;
         this.token = token;
@@ -22,16 +24,19 @@ public class UserCredentials {
     }
 
     public UserCredentials (String[] stringArray){
-        this.email = stringArray[0];
-        this.password = stringArray[1];
-        this.token = stringArray[2];
-        this.imageUrl = stringArray[3];
-        this.userName = stringArray[4];
+
+        this.userID = stringArray[0];
+        this.email = stringArray[1];
+        this.password = stringArray[2];
+        this.token = stringArray[3];
+        this.imageUrl = stringArray[4];
+        this.userName = stringArray[5];
+
 
     }
 
     public String oneString(){
-        return this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
+        return this.userID+ "|"+this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
     }
 
 
@@ -56,4 +61,7 @@ public class UserCredentials {
         return userName;
     }
 
+    public String getUserID() {
+        return userID;
+    }
 }
