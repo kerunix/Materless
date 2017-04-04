@@ -43,37 +43,8 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         mDatabase = FirebaseDatabase.getInstance();
 
         mListViewMessage = (ListView) findViewById(R.id.listViewMessage);
-
-        mAdapter = new CustomListAdapter(mRef, MessageListActivity.this, R.layout.message_list_item);
-
-        mListViewMessage.setAdapter(mAdapter);
-
         buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
         buttonAddEvent.setOnClickListener(this);
-
-        mListViewMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
-                Message message = (Message) mAdapter.getItem(position);
-
-
-
-                intent.putExtra("message", message);
-
-
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        intent = getIntent();
-
-        if (intent.hasExtra("deletePosition")) {
-
-
-        }
 
     }
 
@@ -98,6 +69,32 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         }
 
         mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
+
+        mAdapter = new CustomListAdapter(mRef, MessageListActivity.this, R.layout.message_list_item);
+        mListViewMessage.setAdapter(mAdapter);
+        mListViewMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
+                Message message = (Message) mAdapter.getItem(position);
+
+
+
+                intent.putExtra("message", message);
+
+
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        intent = getIntent();
+
+        if (intent.hasExtra("deletePosition")) {
+
+
+        }
     }
 
     @Override

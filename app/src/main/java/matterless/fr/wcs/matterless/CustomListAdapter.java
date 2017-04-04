@@ -22,5 +22,7 @@ public class CustomListAdapter extends FirebaseListAdapter<Message> {
         TextView textViewListItemName = (TextView) v.findViewById(R.id.textViewMessageName);
 
         textViewListItemName.setText(model.getmName());
+        String toto = model.getmName();
+        String jena = "";
     }
 }
