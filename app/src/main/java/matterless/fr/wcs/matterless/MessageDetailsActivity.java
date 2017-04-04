@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +24,8 @@ import static android.R.id.message;
 
 public class MessageDetailsActivity extends AppCompatActivity implements View.OnClickListener{
 
+    public final String FILE_NAME = "FILE_NAME";
+
     private Intent intent;
 
     private TextView textViewMessageDetailsTitle;
@@ -25,10 +33,13 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
     private TextView textViewMessageDetailsContent;
     private TextView textViewMessageDetailsDays;
 
-    private int position;
+    private String ref;
 
     private Button buttonMessageDetailsEdit;
     private Button buttonMessageDetailsDelete;
+
+    private FileInputStream mfileInputStream;
+    private UserCredentials muserCredentials;
 
 
 
@@ -38,7 +49,6 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_message_details);
 
         buttonMessageDetailsEdit =(Button) findViewById(R.id.buttonMessageDetailsEdit);
-            buttonMessageDetailsEdit.setOnClickListener(this);
         buttonMessageDetailsDelete =(Button) findViewById(R.id.buttonMessageDetailsDelete);
             buttonMessageDetailsDelete.setOnClickListener(this);
 
@@ -46,32 +56,62 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         textViewMessageDetailsHour = (TextView) findViewById(R.id.textViewMessageDetailsHour);
         textViewMessageDetailsTitle = (TextView) findViewById(R.id.textViewMessageDetailsTitle);
         textViewMessageDetailsDays = (TextView) findViewById(R.id.textViewMessageDetailsDays);
+
         intent = getIntent();
 
-        Message message = intent.getParcelableExtra("message");
-        position = intent.getIntExtra("position", 0);
+        final Message message = intent.getParcelableExtra("message");
+        ref = intent.getStringExtra("ref");
 
         textViewMessageDetailsTitle.setText(message.getmName());
         textViewMessageDetailsDays.setText(Arrays.toString(message.getmDays().toArray()));
         textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
 
+        buttonMessageDetailsEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MessageDetailsActivity.this, MessageSettingActivity.class);
+                intent.putExtra("message", message);
+                intent.putExtra("ref", ref);
+                startActivity(intent);
+                finish();
+            }
+        });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            mfileInputStream = openFileInput(FILE_NAME);
+            int c;
+            String temp="";
+            while( (c = mfileInputStream.read()) != -1){
+                temp = temp + Character.toString((char)c);
+            }
+            String[] arr = temp.split("\\|");
+            muserCredentials = new UserCredentials(arr);
+            mfileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        muserCredentials = null;
     }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-
-            case R.id.buttonMessageDetailsEdit:
-
-                Intent intent = new Intent(MessageDetailsActivity.this, MessageSettingActivity.class);
-                intent.putExtra("message", message);
-                intent.putExtra("position", position);
-                startActivity(intent);
-                finish();
-                break;
 
             case R.id.buttonMessageDetailsDelete:
 
@@ -83,7 +123,9 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent delete = new Intent(MessageDetailsActivity.this, MessageListActivity.class);
-                        delete.putExtra("deletePosition", position);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                        mRef.child(ref).removeValue();
                         startActivity(delete);
                         finish();
 

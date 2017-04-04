@@ -43,6 +43,7 @@ public abstract class FirebaseListAdapter<Message> extends BaseAdapter {
         mModels = new ArrayList<Message>();
         mKeys = new ArrayList<String>();
         // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
+
         mListener = this.mRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
@@ -133,6 +134,11 @@ public abstract class FirebaseListAdapter<Message> extends BaseAdapter {
         mRef.removeEventListener(mListener);
         mModels.clear();
         mKeys.clear();
+    }
+
+    public String getmKey(int i) {
+
+        return mKeys.get(i);
     }
 
     @Override

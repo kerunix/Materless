@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Button;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -71,7 +72,9 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
 
         mAdapter = new CustomListAdapter(mRef, MessageListActivity.this, R.layout.message_list_item);
+
         mListViewMessage.setAdapter(mAdapter);
+
         mListViewMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -79,22 +82,14 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
                 Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
                 Message message = (Message) mAdapter.getItem(position);
 
-
-
+                String ref = mAdapter.getmKey(position);
                 intent.putExtra("message", message);
-
+                intent.putExtra("ref", ref);
 
                 startActivity(intent);
                 finish();
             }
         });
-
-        intent = getIntent();
-
-        if (intent.hasExtra("deletePosition")) {
-
-
-        }
     }
 
     @Override

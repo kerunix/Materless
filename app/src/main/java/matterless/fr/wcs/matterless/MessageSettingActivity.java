@@ -33,6 +33,9 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
 
     public final String FILE_NAME = "FILE_NAME";
 
+    private Intent intent;
+    private String ref;
+
     private String[] mDayList;
 
     private Button buttonTimePicker;
@@ -59,10 +62,14 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
 
         database = FirebaseDatabase.getInstance();
 
+        intent = getIntent();
+        final Message mMessage = intent.getParcelableExtra("message");
+        ref = intent.getStringExtra("ref");
+
+
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
         buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
-          buttonCreateEvent.setOnClickListener(this);
 
         mMessageName = (EditText) findViewById(R.id.editTextMessageName);
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
@@ -70,6 +77,61 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
         mDayList = getResources().getStringArray(R.array.daysOfWeekArray);
         finalDays = new ArrayList<>();
 
+        if (intent.hasExtra("message")) {
+
+            buttonTimePicker.setText(mMessage.getmTimeHour() + ":" + mMessage.getmTimeMinute());
+            buttonSelectDay.setText(mMessage.getmDays().toString());
+            mMessageName.setText(mMessage.getmName());
+            mMessageContent.setText(mMessage.getmMessageContent());
+            buttonCreateEvent.setText("Valider");
+
+        }
+
+        final boolean[] _selections = {false, false, false, false, false, false, false};
+
+        if (intent.hasExtra("message")) {
+
+            for (int i = 0; i < mMessage.getmDays().size(); i++ ) {
+
+                switch (mMessage.getmDays().get(i)) {
+
+                    case "Lundi" :
+                        _selections[0] = true;
+                        finalDays.add(mDayList[0]);
+                        break;
+
+                    case "Mardi":
+                        _selections[1] = true;
+                        finalDays.add(mDayList[1]);
+                        break;
+
+                    case "Mercredi":
+                        _selections[2] = true;
+                        finalDays.add(mDayList[2]);
+                        break;
+
+                    case "Jeudi":
+                        _selections[3] = true;
+                        finalDays.add(mDayList[3]);
+                        break;
+
+                    case "Vendredi":
+                        _selections[4] = true;
+                        finalDays.add(mDayList[4]);
+                        break;
+
+                    case "Samedi":
+                        _selections[5] = true;
+                        finalDays.add(mDayList[5]);
+                        break;
+
+                    case "Dimanche":
+                        _selections[6] = true;
+                        finalDays.add(mDayList[6]);
+                        break;
+                }
+            }
+        }
 
         buttonSelectDay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +139,6 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
 
                 final AlertDialog.Builder dayDialog = new AlertDialog.Builder(MessageSettingActivity.this);
                 final String[] day = mDayList;
-                final boolean[] _selections = {false, false, false, false, false, false, false};
 
                 dayDialog.setTitle("Choisis tes jours");
 
@@ -135,6 +196,41 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.show();
+            }
+        });
+
+        buttonCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!intent.hasExtra("message")) {
+
+                    Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
+                    mRef.push().setValue(message);
+                    Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
+                    startActivity(intent);
+                }
+
+                else {
+
+                    if (finalDays != null) {
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
+                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                        mRef.child(ref).setValue(editMessage);
+                        Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
+                        startActivity(intent);
+                    }
+
+                    else {
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays , timeMinute, timeHour, mMessageContent.getText().toString());
+                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                        mRef.child(ref).setValue(editMessage);
+                        Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
+                        startActivity(intent);
+                    }
+
+
+                }
             }
         });
     }
