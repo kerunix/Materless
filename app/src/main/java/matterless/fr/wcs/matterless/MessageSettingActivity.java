@@ -1,6 +1,9 @@
 package matterless.fr.wcs.matterless;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,11 +11,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -54,6 +59,10 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
 
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
+
+    private AlarmManager alarmManager;
+    private Context context;
+    private PendingIntent myPendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,7 +242,44 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                 }
             }
         });
+
+        this.context = this;
+        //alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        final android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance();
+        //calendar.set(2017, 4, 5, timeHour, timeMinute);
+
+
+        //Button buttonStart = (Button) findViewById(R.id.buttonCreateEvent);
+
+        final Intent intent = new Intent(this.context, Alarm_Receiver.class);
+
+        buttonCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendar.set(android.icu.util.Calendar.DAY_OF_WEEK, ?);
+                calendar.set(android.icu.util.Calendar.HOUR_OF_DAY, timeHour);
+                calendar.set(android.icu.util.Calendar.MINUTE, timeMinute);
+
+                String hourString = String.valueOf(timeHour);
+                String minuteString = String.valueOf(timeMinute);
+                Toast.makeText(MessageSettingActivity.this, hourString+"/"+minuteString, Toast.LENGTH_SHORT).show();
+               myPendingIntent = PendingIntent.getBroadcast(MessageSettingActivity.this, 0,
+                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), myPendingIntent);
+                Log.d("yaaataaaaa", "yattaaaaaaa");
+            }
+        });
+
+        /*buttonStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                set_alarm_text("Alarme off");
+                alarmManager.cancel(myPendingIntent);
+            }
+        });*/
     }
+
 
     @Override
     protected void onStart() {
@@ -268,7 +314,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.buttonCreateEvent:
                 Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                 mRef.push().setValue(message);

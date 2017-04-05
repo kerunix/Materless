@@ -41,4 +41,9 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
 
+    <!-- DetaillActivity -->
+
+    <string name="buttonDelete">Supprimer</string>
+    <string name="buttonModify">Modifier</string>
+
 </resources>

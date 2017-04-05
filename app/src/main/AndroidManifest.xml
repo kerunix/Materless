@@ -21,6 +21,7 @@
         <activity android:name=".MessageListActivity" />
         <activity android:name=".MessageSettingActivity" />
         <activity android:name=".MessageDetailsActivity"></activity>
+        <receiver android:name=".Alarm_Receiver" />
     </application>
 
 </manifest>
