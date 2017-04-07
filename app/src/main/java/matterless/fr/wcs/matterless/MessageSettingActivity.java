@@ -61,7 +61,6 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
     private UserCredentials muserCredentials;
 
     private AlarmManager alarmManager;
-    private Context context;
     private PendingIntent myPendingIntent;
 
     @Override
@@ -212,12 +211,16 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View v) {
 
-                if (!intent.hasExtra("message")) {
+                if(finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null){
+
+                    Toast.makeText(MessageSettingActivity.this, R.string.toast_message_empty, Toast.LENGTH_SHORT).show();
+                }
+
+                else if (!intent.hasExtra("message")) {
 
                     Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                     mRef.push().setValue(message);
-                    Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
-                    startActivity(intent);
+                    finish();
                 }
 
                 else {
@@ -226,16 +229,14 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                         final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
-                        Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
 
                     else {
                         final Message editMessage = new Message(mMessageName.getText().toString(), finalDays , timeMinute, timeHour, mMessageContent.getText().toString());
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
-                        Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
 
 
@@ -243,41 +244,6 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             }
         });
 
-        this.context = this;
-        //alarmTimePicker = (TimePicker) findViewById(R.id.timePicker);
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        final android.icu.util.Calendar calendar = android.icu.util.Calendar.getInstance();
-        //calendar.set(2017, 4, 5, timeHour, timeMinute);
-
-
-        //Button buttonStart = (Button) findViewById(R.id.buttonCreateEvent);
-
-        final Intent intent = new Intent(this.context, Alarm_Receiver.class);
-
-        buttonCreateEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar.set(android.icu.util.Calendar.DAY_OF_WEEK, ?);
-                calendar.set(android.icu.util.Calendar.HOUR_OF_DAY, timeHour);
-                calendar.set(android.icu.util.Calendar.MINUTE, timeMinute);
-
-                String hourString = String.valueOf(timeHour);
-                String minuteString = String.valueOf(timeMinute);
-                Toast.makeText(MessageSettingActivity.this, hourString+"/"+minuteString, Toast.LENGTH_SHORT).show();
-               myPendingIntent = PendingIntent.getBroadcast(MessageSettingActivity.this, 0,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), myPendingIntent);
-                Log.d("yaaataaaaa", "yattaaaaaaa");
-            }
-        });
-
-        /*buttonStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                set_alarm_text("Alarme off");
-                alarmManager.cancel(myPendingIntent);
-            }
-        });*/
     }
 
 
@@ -318,8 +284,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             case R.id.buttonCreateEvent:
                 Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
                 mRef.push().setValue(message);
-                Intent intent = new Intent(MessageSettingActivity.this, MessageListActivity.class);
-                startActivity(intent);
+                finish();
         }
     }
 }
