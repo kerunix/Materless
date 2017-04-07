@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public final String FILE_NAME = "FILE_NAME";
     public static final String TAG = "MainActivity";
+    public static final String MESSAGE_NUMBER = "message_number";
 
     private Button buttonConfigureEvents;
     private Button buttonMyProfile;
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             calendar.set(Calendar.MINUTE, arrayListMessage.get(i).getmTimeMinute());
 
                             Intent intent = new Intent(MainActivity.this, Alarm_Receiver.class);
+                            intent.putExtra(MESSAGE_NUMBER, i);
                             PendingIntent myPendingIntent = PendingIntent.getBroadcast(MainActivity.this, i + j,
                                     intent, PendingIntent.FLAG_CANCEL_CURRENT);
                             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), myPendingIntent);
