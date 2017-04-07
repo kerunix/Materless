@@ -122,11 +122,9 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                 adb.setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent delete = new Intent(MessageDetailsActivity.this, MessageListActivity.class);
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).removeValue();
-                        startActivity(delete);
                         finish();
 
                     }

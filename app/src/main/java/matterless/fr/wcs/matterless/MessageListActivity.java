@@ -87,7 +87,6 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
                 intent.putExtra("ref", ref);
 
                 startActivity(intent);
-                finish();
             }
         });
     }
@@ -106,7 +105,6 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
             case R.id.buttonAddEvent:
                 Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
                 startActivity(intentToMessageSetting);
-                finish();
                 break;
         }
     }
