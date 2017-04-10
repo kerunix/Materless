@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewBigButtonMainActivity = (ImageView) findViewById(R.id.imageViewBigButtonMainActivity);
         imageViewBigButtonMainActivity.setOnClickListener(this);
 
-        arrayListMessage = new ArrayList<Message>();
-
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
     }
@@ -93,73 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         else {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
-            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                        arrayListMessage.add(child.getValue(Message.class));
-                    }
-
-                    for (int i = 0; i < arrayListMessage.size(); i++) {
-                        Calendar calendar = Calendar.getInstance();
-                        for (int j = 0; j < arrayListMessage.get(i).getmDays().size(); j++) {
-
-
-                            switch (arrayListMessage.get(i).getmDays().get(j)) {
-
-                                case "Lundi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 2);
-                                    break;
-
-                                case "Mardi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 3);
-                                    break;
-
-                                case "Mercredi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 4);
-                                    break;
-
-                                case "Jeudi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 5);
-                                    break;
-
-                                case "Vendredi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 6);
-                                    break;
-
-                                case "Samedi":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 7);
-                                    break;
-
-                                case "Dimanche":
-                                    //calendar.set(Calendar.DAY_OF_WEEK, 1);
-                                    break;
-
-
-                            }
-
-                            calendar.set(Calendar.HOUR_OF_DAY, arrayListMessage.get(i).getmTimeHour());
-                            calendar.set(Calendar.MINUTE, arrayListMessage.get(i).getmTimeMinute());
-
-                            Intent intent = new Intent(MainActivity.this, Alarm_Receiver.class);
-                            intent.putExtra(MESSAGE_NUMBER, i);
-                            PendingIntent myPendingIntent = PendingIntent.getBroadcast(MainActivity.this, i + j,
-                                    intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), myPendingIntent);
-                            Log.d(TAG, "yattaaaaaaa");
-                        }
-                    }
-
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
         }
 
 
@@ -229,26 +161,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             case R.id.imageViewBigButtonMainActivity:
-                Post post = new Post();
-                post.setMessage("Ce message est envoyé depuis l'émulateur android. Vive le forum de mattermost !!");
-                post.setChannelId("bfsnn43zfpne3m877s66a454ih");
-                String token = muserCredentials.getToken();
-                MattermostService sendPost = ServiceGenerator.RETROFIT.create(MattermostService.class);
-                Call<Post> callPost = sendPost.sendPost( ("Bearer " + muserCredentials.getToken()), post );
-                callPost.enqueue(new Callback<Post>() {
-                    @Override
-                    public void onResponse(Call<Post> call, Response<Post> response) {
-                        if(response.isSuccessful()){
-                            Log.d(TAG, "Post sended" + response.toString());
 
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        arrayListMessage = new ArrayList<>();
+
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                            arrayListMessage.add(child.getValue(Message.class));
                         }
-                        else{
-                            Log.d(TAG, String.valueOf("response was not sucessfullll" +response.toString() + response.headers()));
+
+
+
+                        for (int i = 0; i < arrayListMessage.size(); i++) {
+                            Calendar calendar = Calendar.getInstance();
+                            for (int j = 0; j < arrayListMessage.get(i).getmDays().size(); j++) {
+
+                                switch (arrayListMessage.get(i).getmDays().get(j)) {
+
+                                    case "Lundi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                                        break;
+
+                                    case "Mardi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+                                        break;
+
+                                    case "Mercredi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+                                        break;
+
+                                    case "Jeudi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+                                        break;
+
+                                    case "Vendredi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+                                        break;
+
+                                    case "Samedi":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                                        break;
+
+                                    case "Dimanche":
+                                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                                        break;
+
+
+                                }
+
+                                calendar.set(Calendar.HOUR_OF_DAY, arrayListMessage.get(i).getmTimeHour());
+                                calendar.set(Calendar.MINUTE, arrayListMessage.get(i).getmTimeMinute());
+
+                                Intent intentToAlarm_Receiver = new Intent(MainActivity.this, Alarm_Receiver.class);
+                                intentToAlarm_Receiver.putExtra(MESSAGE_NUMBER, i);
+                                String requestCode = String.valueOf(i) + String.valueOf(j);
+                                PendingIntent myPendingIntent = PendingIntent.getBroadcast(MainActivity.this,
+                                        Integer.parseInt(requestCode),
+                                        intentToAlarm_Receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+                                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY * 7, myPendingIntent);
+                                Log.d(TAG, "yattaaaaaaa");
+
+                            }
                         }
+
+
                     }
 
                     @Override
-                    public void onFailure(Call<Post> call, Throwable t) {
+                    public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });

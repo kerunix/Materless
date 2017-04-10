@@ -44,7 +44,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         messageNumber = intent.getIntExtra(MESSAGE_NUMBER, 1000000);
-        arrayListMessage = new ArrayList<Message>();
+        arrayListMessage = new ArrayList<>();
 
 
         Log.e("Ca marche !", "BORDEL !!!");
@@ -73,31 +73,32 @@ public class Alarm_Receiver extends BroadcastReceiver {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                     arrayListMessage.add(child.getValue(Message.class));
+                }
 
-                    Post post = new Post();
-                    post.setMessage(arrayListMessage.get(messageNumber).getmMessageContent());
-                    post.setChannelId("bfsnn43zfpne3m877s66a454ih");
-                    String token = muserCredentials.getToken();
-                    MattermostService sendPost = ServiceGenerator.RETROFIT.create(MattermostService.class);
-                    Call<Post> callPost = sendPost.sendPost( ("Bearer " + muserCredentials.getToken()), post );
-                    callPost.enqueue(new Callback<Post>() {
-                        @Override
-                        public void onResponse(Call<Post> call, Response<Post> response) {
-                            if(response.isSuccessful()){
-                                Log.d(TAG, "Post sended" + response.toString());
+                Post post = new Post();
+                post.setMessage(arrayListMessage.get(messageNumber).getmMessageContent());
+                post.setChannelId("bfsnn43zfpne3m877s66a454ih");
+                String token = muserCredentials.getToken();
+                MattermostService sendPost = ServiceGenerator.RETROFIT.create(MattermostService.class);
+                Call<Post> callPost = sendPost.sendPost( ("Bearer " + muserCredentials.getToken()), post );
+                callPost.enqueue(new Callback<Post>() {
+                    @Override
+                    public void onResponse(Call<Post> call, Response<Post> response) {
+                        if(response.isSuccessful()){
+                            Log.d(TAG, "Post sended" + response.toString());
 
-                            }
-                            else{
-                                Log.d(TAG, String.valueOf("response was not sucessfullll" +response.toString() + response.headers()));
-                            }
                         }
+                        else{
+                            Log.d(TAG, String.valueOf("response was not sucessfullll" +response.toString() + response.headers()));
+                        }
+                    }
 
                         @Override
                         public void onFailure(Call<Post> call, Throwable t) {
 
                         }
                     });
-                }
+
 
             }
 
