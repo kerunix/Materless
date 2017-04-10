@@ -63,7 +63,7 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         ref = intent.getStringExtra("ref");
 
         textViewMessageDetailsTitle.setText(message.getmName());
-        textViewMessageDetailsDays.setText(Arrays.toString(message.getmDays().toArray()));
+        textViewMessageDetailsDays.setText(arrayConverter(message.getmDays()));
         textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
 
@@ -132,5 +132,22 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                 adb.show();
                 break;
         }
+    }
+
+    public String arrayConverter(ArrayList<String> arrayList) {
+
+        String daysDisplay = "";
+
+        for (int i = 0; i < arrayList.size(); i++) {
+
+            if (i == arrayList.size()-1) {
+
+                daysDisplay = daysDisplay + arrayList.get(i) + ".";
+            } else {
+
+                daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+            }
+        }
+        return daysDisplay;
     }
 }
