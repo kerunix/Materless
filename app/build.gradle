@@ -31,6 +31,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'pl.bclogic:pulsator4droid:1.0.3'
     testCompile 'junit:junit:4.12'
 }
 
