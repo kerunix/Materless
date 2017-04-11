@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -34,25 +36,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+
 public class MessageSettingActivity extends AppCompatActivity /*implements View.OnClickListener*/ {
+
 
     public final String FILE_NAME = "FILE_NAME";
 
     private Intent intent;
     private String ref;
 
-    private String[] mDayList;
-
     private Button buttonTimePicker;
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
-
     private EditText mMessageName;
     private EditText mMessageContent;
 
     private ArrayList<String> finalDays;
+    private String[] mDayList;
     private int timeMinute;
     private int timeHour;
+
+    private ChannelRequest mChannelRequest;
+    private String mChoosenChannel;
+
     private int hour;
     private int minute;
 
@@ -61,9 +67,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
-
-    private AlarmManager alarmManager;
-    private PendingIntent myPendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,9 +263,9 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         try {
             mfileInputStream = openFileInput(FILE_NAME);
             int c;
-            String temp="";
-            while( (c = mfileInputStream.read()) != -1){
-                temp = temp + Character.toString((char)c);
+            String temp = "";
+            while ((c = mfileInputStream.read()) != -1) {
+                temp = temp + Character.toString((char) c);
             }
             String[] arr = temp.split("\\|");
             muserCredentials = new UserCredentials(arr);
@@ -273,7 +276,24 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             e.printStackTrace();
         }
 
-        mRef = database.getReference("Messages/"+muserCredentials.getUserID());
+        mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+
+        MattermostService mattermostService =
+                ServiceGenerator.RETROFIT.create(MattermostService.class);
+        Call<ChannelRequest> call = mattermostService.getChannels("Bearer " + muserCredentials.getToken());
+        call.enqueue(new Callback<ChannelRequest>() {
+            @Override
+            public void onResponse(Call<ChannelRequest> call, Response<ChannelRequest> response) {
+                mChannelRequest = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<ChannelRequest> call, Throwable t) {
+                Log.e(MainActivity.TAG, t.toString());
+
+
+            }
+        });
     }
 
     @Override
