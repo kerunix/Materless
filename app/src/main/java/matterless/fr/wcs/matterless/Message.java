@@ -14,6 +14,7 @@ class Message implements Parcelable {
     private int mTimeHour;
     private String mChannelId;
     private String mChannelName;
+    private String mMessageContent;
 
 
     private  Message(){}

@@ -1,6 +1,7 @@
 
 package matterless.fr.wcs.matterless;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -28,6 +29,26 @@ public class ChannelRequest {
 
     public void setMembers(Members members) {
         this.members = members;
+    }
+
+    public ArrayList<java.lang.String> getChannelIds(List<Channel> channels) {
+
+        ArrayList<java.lang.String> arrayList = new ArrayList<>();
+        for (int i = 0; i < channels.size(); i++) {
+
+            arrayList.add(channels.get(i).getId());
+        }
+        return arrayList;
+    }
+
+    public java.lang.String[] getChannelNames(List<Channel> channels) {
+
+        java.lang.String[] strings = new java.lang.String[channels.size()];
+        for (int i = 0; i < channels.size(); i++) {
+
+            strings[i] = (channels.get(i).getDisplayName());
+        }
+        return strings;
     }
 
     public class Channel {

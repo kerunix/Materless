@@ -63,7 +63,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     private int timeHour;
 
     private ChannelRequest mChannelRequest;
-    private String mChoosenChannel;
+    private String mChoosenChannelName;
+    private String mChoosenChannelId;
 
     private int hour;
     private int minute;
@@ -88,7 +89,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
-        buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
+        buttonCreateEvent = (Button) findViewById(R.id.buttonCreateEvent);
         buttonChoseChannel = (Button) findViewById(R.id.buttonChoseChannel);
 
         mMessageName = (EditText) findViewById(R.id.editTextMessageName);
@@ -109,15 +110,35 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         }
 
+
+        buttonChoseChannel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
+                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getChannels());
+
+                channelDialog.setTitle("Choisis ton canal de discussion");
+                channelDialog.setSingleChoiceItems(channelList, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mChoosenChannelName = mChannelRequest.getChannels().get(which).getDisplayName();
+                        mChoosenChannelId = mChannelRequest.getChannels().get(which).getId();
+                        buttonChoseChannel.setText(mChoosenChannelName);
+                        dialog.dismiss();
+                    }
+                }).show();
+            }
+        });
+
         final boolean[] _selections = {false, false, false, false, false, false, false};
 
         if (intent.hasExtra("message")) {
 
-            for (int i = 0; i < mMessage.getmDays().size(); i++ ) {
+            for (int i = 0; i < mMessage.getmDays().size(); i++) {
 
                 switch (mMessage.getmDays().get(i)) {
 
-                    case "Lundi" :
+                    case "Lundi":
                         _selections[0] = true;
                         finalDays.add(mDayList[0]);
                         break;
@@ -172,9 +193,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
                         if (isChecked) {
                             finalDays.add(mDayList[which]);
-                        }
-
-                        else if (!isChecked) {
+                        } else if (!isChecked) {
                             finalDays.remove(mDayList[which]);
                         }
 
@@ -219,7 +238,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         timeHour = selectedHour;
-                        timeMinute =selectedMinute;
+                        timeMinute = selectedMinute;
 
                         if (timeMinute < 10) {
                             buttonTimePicker.setText(timeHour + ":0" + timeMinute);
@@ -236,24 +255,18 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                if(!intent.hasExtra("message") &&finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null){
+                if (!intent.hasExtra("message") && finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null) {
 
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
-                }
-
-
-
-                else {
+                } else {
 
                     if (finalDays != null) {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannel);
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
                         finish();
-                    }
-
-                    else {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays , timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannel);
+                    } else {
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
                         finish();
@@ -316,7 +329,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         for (int i = 0; i < 2; i++) {
 
-            if (i == arrayList.size()-1) {
+            if (i == arrayList.size() - 1) {
 
                 daysDisplay = daysDisplay + arrayList.get(i) + ".";
             } else {
@@ -327,4 +340,5 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         daysDisplay = daysDisplay + "...";
         return daysDisplay;
     }
+
 }
