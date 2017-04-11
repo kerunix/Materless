@@ -258,19 +258,20 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 if (!intent.hasExtra("message") && finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null) {
 
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else if(!intent.hasExtra("message")){
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.push().setValue(editMessage);
+                    finish();
+                }
+                else {
 
-                    if (finalDays != null) {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
-                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                        mRef.child(ref).setValue(editMessage);
-                        finish();
-                    } else {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
-                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                        mRef.child(ref).setValue(editMessage);
-                        finish();
-                    }
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.child(ref).setValue(editMessage);
+                    finish();
+
                 }
             }
         });
@@ -326,18 +327,23 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     public String arrayConverter(ArrayList<String> arrayList) {
 
         String daysDisplay = "";
+        if(arrayList.size() > 1) {
 
-        for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++) {
 
-            if (i == arrayList.size() - 1) {
+                if (i == arrayList.size() - 1) {
 
-                daysDisplay = daysDisplay + arrayList.get(i) + ".";
-            } else {
+                    daysDisplay = daysDisplay + arrayList.get(i) + ".";
+                } else {
 
-                daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+                    daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+                }
             }
+            daysDisplay = daysDisplay + "...";
         }
-        daysDisplay = daysDisplay + "...";
+        else {
+            daysDisplay = arrayList.get(0);
+        }
         return daysDisplay;
     }
 
