@@ -14,16 +14,18 @@ class Message implements Parcelable {
     private int mTimeMinute;
     private int mTimeHour;
     private String mMessageContent;
+    private String mChannel;
 
     private  Message(){}
 
-    public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent) {
+    public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent, String channel) {
 
         mName = name;
         mDays = days;
         mTimeMinute = timeMinute;
         mTimeHour = timeHour;
         mMessageContent = messageContent;
+        mChannel = channel;
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -78,6 +80,14 @@ class Message implements Parcelable {
         this.mMessageContent = mMessageContent;
     }
 
+    public String getmChannel() {
+        return mChannel;
+    }
+
+    public void setmChannel(String mChannel) {
+        this.mChannel = mChannel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -92,6 +102,7 @@ class Message implements Parcelable {
         dest.writeInt(mTimeMinute); //minute
         dest.writeInt(mTimeHour); //hour
         dest.writeString(mMessageContent);    //content
+        dest.writeString(mChannel); //channel
     }
 
     private Message(Parcel in){
@@ -103,5 +114,6 @@ class Message implements Parcelable {
         mTimeMinute = in.readInt();
         mTimeHour = in.readInt();
         mMessageContent = in.readString();
+        mChannel = in.readString();
     }
 }

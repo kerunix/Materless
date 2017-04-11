@@ -1,11 +1,15 @@
 package matterless.fr.wcs.matterless;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +45,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
     private ArrayList<Message> arrayListMessage;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
 
         messageNumber = intent.getIntExtra(MESSAGE_NUMBER, 1000000);
         arrayListMessage = new ArrayList<>();
@@ -68,12 +72,22 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                     arrayListMessage.add(child.getValue(Message.class));
                 }
+
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                Notification noti = new Notification.Builder(context)
+                        .setContentTitle(arrayListMessage.get(messageNumber).getmName())
+                        .setContentText("Youhou")
+                        .setSmallIcon(R.mipmap.icon)
+                        .build();
+
+                notificationManager.notify((int) Math.random(), noti);
 
                 Post post = new Post();
                 post.setMessage(arrayListMessage.get(messageNumber).getmMessageContent());
