@@ -28,6 +28,20 @@
         <item>Vendredi</item>
         <item>Samedi</item>
         <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+        <item>Dimanche</item>
+
     </string-array>
     <string name="buttonTimePickerText">Heure</string>
     <string name="buttonSelectDayText">Jours</string>
@@ -47,5 +61,10 @@
     <string name="buttonModify">Modifier</string>
     <string name="toast_message_empty">Complète tout les champs ci-dessus</string>
     <string name="toastComplete">Complete les champs</string>
+    <string name="adbDeleteTitle">Supprimer?</string>
+    <string name="adbDeleteMessage">Es-tu sûr(e) de vouloir supprimer ce message ?</string>
+    <string name="adbDeleteBegButton">Annuler</string>
+    <string name="adbDeletePosButton">Supprimer</string>
+    <string name="buttonPickChannel">Choisi le canal où envoyer le message</string>
 
 </resources>

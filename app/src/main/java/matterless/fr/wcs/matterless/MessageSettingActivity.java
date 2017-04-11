@@ -99,9 +99,9 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         }
 
-        final boolean[] _selections = {false, false, false, false, false, false, false};
+        final boolean[] _selections = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
-        if (intent.hasExtra("message")) {
+        /*if (intent.hasExtra("message")) {
 
             for (int i = 0; i < mMessage.getmDays().size(); i++ ) {
 
@@ -143,7 +143,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                         break;
                 }
             }
-        }
+        }*/
 
         buttonSelectDay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,7 +298,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         String daysDisplay = "";
 
-        for (int i = 0; i < arrayList.size(); i++) {
+        for (int i = 0; i < 2; i++) {
 
             if (i == arrayList.size()-1) {
 
@@ -308,6 +308,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 daysDisplay = daysDisplay + arrayList.get(i) + ", ";
             }
         }
+        daysDisplay = daysDisplay + "...";
         return daysDisplay;
     }
 }

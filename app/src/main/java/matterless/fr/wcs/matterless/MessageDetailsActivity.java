@@ -22,7 +22,7 @@ import java.util.List;
 
 import static android.R.id.message;
 
-public class MessageDetailsActivity extends AppCompatActivity implements View.OnClickListener{
+public class MessageDetailsActivity extends AppCompatActivity {
 
     public final String FILE_NAME = "FILE_NAME";
 
@@ -50,7 +50,6 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
 
         buttonMessageDetailsEdit =(Button) findViewById(R.id.buttonMessageDetailsEdit);
         buttonMessageDetailsDelete =(Button) findViewById(R.id.buttonMessageDetailsDelete);
-            buttonMessageDetailsDelete.setOnClickListener(this);
 
         textViewMessageDetailsContent = (TextView) findViewById(R.id.textViewMessageDetailsContent);
         textViewMessageDetailsHour = (TextView) findViewById(R.id.textViewMessageDetailsHour);
@@ -75,6 +74,27 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                 intent.putExtra("ref", ref);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        buttonMessageDetailsDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(MessageDetailsActivity.this);
+                adb.setTitle(R.string.adbDeleteTitle);
+                adb.setMessage(R.string.adbDeleteMessage);
+                adb.setNegativeButton(R.string.adbDeleteBegButton, null);
+                adb.setPositiveButton(R.string.adbDeletePosButton, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                        mRef.child(ref).removeValue();
+                        finish();
+
+                    }
+                });
+                adb.show();
             }
         });
 
@@ -106,32 +126,6 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         super.onStop();
 
         muserCredentials = null;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-
-            case R.id.buttonMessageDetailsDelete:
-
-                AlertDialog.Builder adb = new AlertDialog.Builder(MessageDetailsActivity.this);
-                adb.setTitle("Supprimer?");
-                adb.setMessage("Es-tu sûr(e) de vouloir supprimer ce message ?");
-                adb.setNegativeButton("Annuler", null);
-                adb.setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                        mRef.child(ref).removeValue();
-                        finish();
-
-                    }
-                });
-                adb.show();
-                break;
-        }
     }
 
     public String arrayConverter(ArrayList<String> arrayList) {
