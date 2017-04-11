@@ -36,11 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MessageSettingActivity extends AppCompatActivity implements View.OnClickListener {
+public class MessageSettingActivity extends AppCompatActivity /*implements View.OnClickListener*/ {
+
 
     public final String FILE_NAME = "FILE_NAME";
 
@@ -57,8 +55,12 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
     private String[] mDayList;
     private int timeMinute;
     private int timeHour;
+
     private ChannelRequest mChannelRequest;
     private String mChoosenChannel;
+
+    private int hour;
+    private int minute;
 
     private FirebaseDatabase database;
     private DatabaseReference mRef;
@@ -91,10 +93,12 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
         if (intent.hasExtra("message")) {
 
             buttonTimePicker.setText(mMessage.getmTimeHour() + ":" + mMessage.getmTimeMinute());
-            buttonSelectDay.setText(mMessage.getmDays().toString());
+            buttonSelectDay.setText(arrayConverter(mMessage.getmDays()));
             mMessageName.setText(mMessage.getmName());
             mMessageContent.setText(mMessage.getmMessageContent());
             buttonCreateEvent.setText("Valider");
+            timeHour = mMessage.getmTimeHour();
+            timeMinute = mMessage.getmTimeMinute();
 
         }
 
@@ -175,7 +179,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        buttonSelectDay.setText(finalDays.toString());
+                        buttonSelectDay.setText(arrayConverter(finalDays));
                         dialog.dismiss();
                     }
                 });
@@ -195,15 +199,26 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View v) {
                 Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                if (intent.hasExtra("message")) {
+                    hour = mMessage.getmTimeHour();
+                    minute = mMessage.getmTimeMinute();
+                } else {
+                    hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    minute = mcurrentTime.get(Calendar.MINUTE);
+                }
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(MessageSettingActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        buttonTimePicker.setText(timeHour + ":" + timeMinute);
                         timeHour = selectedHour;
                         timeMinute =selectedMinute;
+
+                        if (timeMinute < 10) {
+                            buttonTimePicker.setText(timeHour + ":0" + timeMinute);
+                        } else {
+                            buttonTimePicker.setText(timeHour + ":" + timeMinute);
+                        }
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.show();
@@ -214,17 +229,12 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View v) {
 
-                if(finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null){
+                if(!intent.hasExtra("message") &&finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null){
 
-                    Toast.makeText(MessageSettingActivity.this, R.string.toast_message_empty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }
 
-                else if (!intent.hasExtra("message")) {
 
-                    Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
-                    mRef.push().setValue(message);
-                    finish();
-                }
 
                 else {
 
@@ -241,14 +251,10 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                         mRef.child(ref).setValue(editMessage);
                         finish();
                     }
-
-
                 }
             }
         });
-
     }
-
 
     @Override
     protected void onStart() {
@@ -297,7 +303,7 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
         muserCredentials = null;
     }
 
-    @Override
+   /* @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -306,5 +312,22 @@ public class MessageSettingActivity extends AppCompatActivity implements View.On
                 mRef.push().setValue(message);
                 finish();
         }
+    }*/
+
+    public String arrayConverter(ArrayList<String> arrayList) {
+
+        String daysDisplay = "";
+
+        for (int i = 0; i < arrayList.size(); i++) {
+
+            if (i == arrayList.size()-1) {
+
+                daysDisplay = daysDisplay + arrayList.get(i) + ".";
+            } else {
+
+                daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+            }
+        }
+        return daysDisplay;
     }
 }
