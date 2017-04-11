@@ -10,7 +10,6 @@ import java.util.List;
 class Message implements Parcelable {
 
     private String mName;
-    private String mMessageContent;
     private ArrayList<String> mDays;
     private int mTimeMinute;
     private int mTimeHour;

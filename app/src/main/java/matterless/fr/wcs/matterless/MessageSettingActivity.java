@@ -36,6 +36,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class MessageSettingActivity extends AppCompatActivity /*implements View.OnClickListener*/ {
 
@@ -48,6 +52,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     private Button buttonTimePicker;
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
+    private Button buttonChoseChannel;
+
     private EditText mMessageName;
     private EditText mMessageContent;
 
@@ -83,6 +89,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
         buttonCreateEvent =(Button) findViewById(R.id.buttonCreateEvent);
+        buttonChoseChannel = (Button) findViewById(R.id.buttonChoseChannel);
 
         mMessageName = (EditText) findViewById(R.id.editTextMessageName);
         mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
@@ -102,9 +109,9 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         }
 
-        final boolean[] _selections = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+        final boolean[] _selections = {false, false, false, false, false, false, false};
 
-        /*if (intent.hasExtra("message")) {
+        if (intent.hasExtra("message")) {
 
             for (int i = 0; i < mMessage.getmDays().size(); i++ ) {
 
@@ -146,7 +153,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                         break;
                 }
             }
-        }*/
+        }
 
         buttonSelectDay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,14 +246,14 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 else {
 
                     if (finalDays != null) {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannel);
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
                         finish();
                     }
 
                     else {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays , timeMinute, timeHour, mMessageContent.getText().toString());
+                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays , timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannel);
                         DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                         mRef.child(ref).setValue(editMessage);
                         finish();
@@ -302,17 +309,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         muserCredentials = null;
     }
-
-   /* @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.buttonCreateEvent:
-                Message message = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString());
-                mRef.push().setValue(message);
-                finish();
-        }
-    }*/
 
     public String arrayConverter(ArrayList<String> arrayList) {
 

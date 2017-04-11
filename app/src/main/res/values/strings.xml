@@ -28,19 +28,6 @@
         <item>Vendredi</item>
         <item>Samedi</item>
         <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
-        <item>Dimanche</item>
 
     </string-array>
     <string name="buttonTimePickerText">Heure</string>
