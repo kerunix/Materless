@@ -115,14 +115,14 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
-                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getChannels());
+                final String[] channelList = mChannelRequest.getChannelNames();
 
                 channelDialog.setTitle("Choisis ton canal de discussion");
                 channelDialog.setSingleChoiceItems(channelList, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mChoosenChannelName = mChannelRequest.getChannels().get(which).getDisplayName();
-                        mChoosenChannelId = mChannelRequest.getChannels().get(which).getId();
+                        mChoosenChannelName = mChannelRequest.getPublicChannel().get(which).getDisplayName();
+                        mChoosenChannelId = mChannelRequest.getPublicChannel().get(which).getId();
                         buttonChoseChannel.setText(mChoosenChannelName);
                         dialog.dismiss();
                     }
