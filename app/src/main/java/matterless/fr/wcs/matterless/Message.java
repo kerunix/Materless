@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class Message implements Parcelable {
@@ -13,21 +12,21 @@ class Message implements Parcelable {
     private ArrayList<String> mDays;
     private int mTimeMinute;
     private int mTimeHour;
-
-    private String mMessageContent;
-    private String mChannel;
+    private String mChannelId;
+    private String mChannelName;
 
 
     private  Message(){}
 
-    public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent, String channel) {
+    public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent, String channelId, String channelName) {
 
         mName = name;
         mDays = days;
         mTimeMinute = timeMinute;
         mTimeHour = timeHour;
         mMessageContent = messageContent;
-        mChannel = channel;
+        mChannelId = channelId;
+        mChannelName = channelName;
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -82,12 +81,20 @@ class Message implements Parcelable {
         this.mMessageContent = mMessageContent;
     }
 
-    public String getmChannel() {
-        return mChannel;
+    public String getmChannelId() {
+        return mChannelId;
     }
 
-    public void setmChannel(String mChannel) {
-        this.mChannel = mChannel;
+    public void setmChannelId(String mChannelId) {
+        this.mChannelId = mChannelId;
+    }
+
+    public String getmChannelName() {
+        return mChannelName;
+    }
+
+    public void setmChannelName(String mChannelName) {
+        this.mChannelName = mChannelName;
     }
 
     @Override
@@ -104,7 +111,8 @@ class Message implements Parcelable {
         dest.writeInt(mTimeMinute); //minute
         dest.writeInt(mTimeHour); //hour
         dest.writeString(mMessageContent);    //content
-        dest.writeString(mChannel); //channel
+        dest.writeString(mChannelId);
+        dest.writeString(mChannelName);
     }
 
     private Message(Parcel in){
@@ -116,6 +124,7 @@ class Message implements Parcelable {
         mTimeMinute = in.readInt();
         mTimeHour = in.readInt();
         mMessageContent = in.readString();
-        mChannel = in.readString();
+        mChannelId = in.readString();
+        mChannelName = in.readString();
     }
 }
