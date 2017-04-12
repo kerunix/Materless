@@ -164,7 +164,7 @@ class Message implements Parcelable {
             }
             daysDisplay = daysDisplay + "...";
         }
-        else {
+        else if (strArray.size() > 0) {
             daysDisplay = strArray.get(0);
         }
         return daysDisplay;

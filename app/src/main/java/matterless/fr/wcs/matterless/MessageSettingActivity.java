@@ -222,7 +222,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                if (!intent.hasExtra("message") && finalDays.size() == 0 || mFutureMessage.getmTimeHour() == 0 || mFutureMessage.getmTimeMinute() == 0 || mEditTextMessageName == null || mEditTextMessageContent == null) {
+                if (!intent.hasExtra("message") && mFutureMessage.getDaysEnabled().length() == 0 || mFutureMessage.getmTimeHour() == 0 || mFutureMessage.getmTimeMinute() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
 
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }

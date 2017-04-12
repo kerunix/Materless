@@ -1,5 +1,6 @@
 package matterless.fr.wcs.matterless;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -307,6 +308,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                             } catch (IOException e) {
                                                 e.printStackTrace();
                                             }
+
+                                            Intent toService = new Intent(SettingsActivity.this, MyService.class);
+                                            toService.setAction(MyService.INTENT_START_BOT);
+                                            startService(toService);
 
 
                                             MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);

@@ -57,15 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewBigButtonMainActivity = (ImageView) findViewById(R.id.imageViewBigButtonMainActivity);
         imageViewBigButtonMainActivity.setOnClickListener(this);
 
-        Intent myIntent = new Intent(MainActivity.this, MyService.class);
-        myIntent.setAction(MyService.INTENT_START_BOT);
-        startService(myIntent);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         try {
             mfileInputStream = openFileInput(FILE_NAME);
@@ -87,13 +78,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intentToSettingsActivity);
         }
 
-    }
+        else{
+            Intent toService = new Intent(MainActivity.this, MyService.class);
+            toService.setAction(MyService.INTENT_START_BOT);
+            startService(toService);
+        }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        muserCredentials = null;
     }
 
     @Override

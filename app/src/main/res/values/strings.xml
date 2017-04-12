@@ -20,16 +20,17 @@
     <string name="editTextMessageContentHintText">Message</string>
     <string name="editTextNameHint">Choisis le nom de ton message</string>
     <string name="buttonCreateEventText">Ajouter cet événement</string>
+
     <string-array name="daysOfWeekArray">
+        <item>Dimanche</item>
         <item>Lundi</item>
         <item>Mardi</item>
         <item>Mercredi</item>
         <item>Jeudi</item>
         <item>Vendredi</item>
         <item>Samedi</item>
-        <item>Dimanche</item>
-
     </string-array>
+
     <string name="buttonTimePickerText">Heure</string>
     <string name="buttonSelectDayText">Jours</string>
 

@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -21,13 +22,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MyService extends Service {
 
     public static final String INTENT_START_BOT = "INTENT_START_BOT";
     public static final String INTENT_STOP_BOT = "INTENT_STOP_BOT";
     public final String FILE_NAME = "FILE_NAME";
-    public static final String MESSAGE_NUMBER = "message_number";
+    public static final String MESSAGE_NAME = "message_name";
+    public static final String MESSAGE_CONTENT = "message_content";
+    public static final String CHANNEL_ID = "channel_id";
     public static final String TAG = "MyService";
 
 
@@ -35,18 +39,13 @@ public class MyService extends Service {
 
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
+    private DatabaseReference databaseReference;
 
-    private ArrayList<Message> arrayListMessage;
 
     private AlarmManager alarmManager;
 
 
     public MyService() {
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -71,76 +70,29 @@ public class MyService extends Service {
             e.printStackTrace();
         }
 
+        databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
 
         if (intent != null){
             if(intent.getAction().equals(INTENT_START_BOT)){
-                Log.e("lala","lala");
-
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
+                Log.e(TAG,"bot Started");
                 databaseReference.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Message message = dataSnapshot.getValue(Message.class);
-
-                        Calendar calendar = Calendar.getInstance();
-
-                        for (int i = 0; i < message.getmDays().size(); i++){
-
-                            switch (message.getmDays().get(i)) {
-
-                                case "Lundi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                                    break;
-
-                                case "Mardi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-                                    break;
-
-                                case "Mercredi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-                                    break;
-
-                                case "Jeudi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-                                    break;
-
-                                case "Vendredi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                                    break;
-
-                                case "Samedi":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-                                    break;
-
-                                case "Dimanche":
-                                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                                    break;
-
-
-                            }
-
-                            calendar.set(Calendar.HOUR_OF_DAY, message.getmTimeHour());
-                            calendar.set(Calendar.MINUTE, message.getmTimeMinute());
-
-                            Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
-                            intentToAlarm_Receiver.putExtra(MESSAGE_NUMBER, dataSnapshot.getKey());
-                            String requestCode = String.valueOf(i) + String.valueOf(j);
-                            PendingIntent myPendingIntent = PendingIntent.getBroadcast(MyService.this,
-                                    Integer.parseInt(requestCode),
-                                    intentToAlarm_Receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY * 7, myPendingIntent);
-                            Log.d(TAG, "yattaaaaaaa");
-
-                        }
+                        cancelAlarm(dataSnapshot);
+                        sendAlarm(dataSnapshot);
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        cancelAlarm(dataSnapshot);
+                        sendAlarm(dataSnapshot);
+                        Log.e(TAG, "data changed");
 
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        cancelAlarm(dataSnapshot);
 
                     }
 
@@ -153,12 +105,56 @@ public class MyService extends Service {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                }
+                });
             }
             else if(intent.getAction().equals(intent.ACTION_BOOT_COMPLETED)){
+                Log.e(TAG,"bot Started");
+                databaseReference.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        cancelAlarm(dataSnapshot);
+                        sendAlarm(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        cancelAlarm(dataSnapshot);
+                        sendAlarm(dataSnapshot);
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        cancelAlarm(dataSnapshot);
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
 
             }
             else if(intent.getAction().equals(INTENT_STOP_BOT)){
+                Log.e(TAG,"bot Stopped");
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        cancelAll(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 
@@ -167,64 +163,63 @@ public class MyService extends Service {
         return START_STICKY;
     }
 
-    arrayListMessage = new ArrayList<>();
-
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-        arrayListMessage.add(child.getValue(Message.class));
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
+    private void sendAlarm(DataSnapshot dataSnapshot){
+        Message message = dataSnapshot.getValue(Message.class);
 
-
-                        for (int i = 0; i < arrayListMessage.size(); i++) {
         Calendar calendar = Calendar.getInstance();
-        for (int j = 0; j < arrayListMessage.get(i).getmDays().size(); j++) {
+        for (int i = 0; i < message.getmDays().size(); i++) {
 
-            switch (arrayListMessage.get(i).getmDays().get(j)) {
+            if (message.getmDays().get(i).isEnabled()) {
 
-                case "Lundi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                    break;
 
-                case "Mardi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-                    break;
+                calendar.set(Calendar.DAY_OF_WEEK, i);
+                calendar.set(Calendar.HOUR_OF_DAY, message.getmTimeHour());
+                calendar.set(Calendar.MINUTE, message.getmTimeMinute());
 
-                case "Mercredi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-                    break;
+                Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
+                intentToAlarm_Receiver.putExtra(MESSAGE_NAME, message.getmName());
+                intentToAlarm_Receiver.putExtra(MESSAGE_CONTENT, message.getmMessageContent());
+                intentToAlarm_Receiver.putExtra(CHANNEL_ID, message.getmChannelId());
 
-                case "Jeudi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-                    break;
+                PendingIntent myPendingIntent = PendingIntent.getBroadcast(MyService.this,
+                        message.getmDays().get(i).getId(),
+                        intentToAlarm_Receiver,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
-                case "Vendredi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                    break;
-
-                case "Samedi":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-                    break;
-
-                case "Dimanche":
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                    break;
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY * 7, myPendingIntent);
+                Log.d(TAG, "yattaaaaaaa");
 
 
             }
+        }
+    }
 
-            calendar.set(Calendar.HOUR_OF_DAY, arrayListMessage.get(i).getmTimeHour());
-            calendar.set(Calendar.MINUTE, arrayListMessage.get(i).getmTimeMinute());
+    private void cancelAlarm(DataSnapshot dataSnapshot){
+        Message message = dataSnapshot.getValue(Message.class);
 
+        //String key = dataSnapshot.getKey();
+        for (int i = 0; i < message.getmDays().size(); i++) {
             Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
-            intentToAlarm_Receiver.putExtra(MESSAGE_NUMBER, i);
-            String requestCode = String.valueOf(i) + String.valueOf(j);
+            //intentToAlarm_Receiver.putExtra(MESSAGE_KEY, key);
             PendingIntent myPendingIntent = PendingIntent.getBroadcast(MyService.this,
-                    Integer.parseInt(requestCode),
-                    intentToAlarm_Receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY * 7, myPendingIntent);
-            Log.d(TAG, "yattaaaaaaa");
+                    message.getmDays().get(i).getId(),
+                    intentToAlarm_Receiver,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(myPendingIntent);
 
+
+        }
+    }
+
+    private void cancelAll(DataSnapshot dataSnapshot){
+        for (DataSnapshot child: dataSnapshot.getChildren()){
+            cancelAlarm(child);
         }
     }
 }
