@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Map;
 import java.util.Objects;
 
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewBigButtonMainActivity.setOnClickListener(this);
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        PulsatorLayout pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
+        pulsator.start();
 
     }
 
