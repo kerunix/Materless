@@ -20,8 +20,14 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".MessageListActivity" />
         <activity android:name=".MessageSettingActivity" />
-        <activity android:name=".MessageDetailsActivity"/>
+        <activity android:name=".MessageDetailsActivity" />
+
         <receiver android:name=".Alarm_Receiver" />
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

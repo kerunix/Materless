@@ -5,21 +5,30 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 class Message implements Parcelable {
 
     private String mName;
-    private ArrayList<String> mDays;
     private int mTimeMinute;
     private int mTimeHour;
     private String mChannelId;
     private String mChannelName;
     private String mMessageContent;
+    private ArrayList<Day> mDays;
 
 
-    private  Message(){}
+    private Message(){}
 
-    public Message (String name, ArrayList<String> days, int timeMinute, int timeHour, String messageContent, String channelId, String channelName) {
+    public Message(String[] str){
+        mDays = new ArrayList<>();
+        for (int i = 0; i < str.length; i++){
+            mDays.add(new Day(str[i]));
+
+        }
+    }
+
+    /*public Message (String name, ArrayList<Day> days, int timeMinute, int timeHour, String messageContent, String channelId, String channelName) {
 
         mName = name;
         mDays = days;
@@ -28,6 +37,17 @@ class Message implements Parcelable {
         mMessageContent = messageContent;
         mChannelId = channelId;
         mChannelName = channelName;
+
+    }*/
+
+    protected Message(Parcel in) {
+        mName = in.readString();
+        mTimeMinute = in.readInt();
+        mTimeHour = in.readInt();
+        mChannelId = in.readString();
+        mChannelName = in.readString();
+        mMessageContent = in.readString();
+        mDays = in.createTypedArrayList(Day.CREATOR);
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -42,20 +62,28 @@ class Message implements Parcelable {
         }
     };
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mName);
+        dest.writeInt(mTimeMinute);
+        dest.writeInt(mTimeHour);
+        dest.writeString(mChannelId);
+        dest.writeString(mChannelName);
+        dest.writeString(mMessageContent);
+        dest.writeTypedList(mDays);
+    }
+
     public String getmName() {
         return mName;
     }
 
     public void setmName(String mName) {
         this.mName = mName;
-    }
-
-    public ArrayList<String> getmDays() {
-        return mDays;
-    }
-
-    public void setmDays(ArrayList<String> mDays) {
-        this.mDays = mDays;
     }
 
     public int getmTimeMinute() {
@@ -74,14 +102,6 @@ class Message implements Parcelable {
         this.mTimeHour = mTimeHour;
     }
 
-    public String getmMessageContent() {
-        return mMessageContent;
-    }
-
-    public void setmMessageContent(String mMessageContent) {
-        this.mMessageContent = mMessageContent;
-    }
-
     public String getmChannelId() {
         return mChannelId;
     }
@@ -98,34 +118,55 @@ class Message implements Parcelable {
         this.mChannelName = mChannelName;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getmMessageContent() {
+        return mMessageContent;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeString(mName);     //name
-        List<String> arr = mDays.subList(0, mDays.size());
-        dest.writeStringList(arr);   //days
-        dest.writeInt(mTimeMinute); //minute
-        dest.writeInt(mTimeHour); //hour
-        dest.writeString(mMessageContent);    //content
-        dest.writeString(mChannelId);
-        dest.writeString(mChannelName);
+    public void setmMessageContent(String mMessageContent) {
+        this.mMessageContent = mMessageContent;
     }
 
-    private Message(Parcel in){
+    public ArrayList<Day> getmDays() {
+        return mDays;
+    }
 
-        mName = in.readString();
-        ArrayList<String> arr = new ArrayList<String>();
-        in.readStringList(arr);
-        mDays = arr;
-        mTimeMinute = in.readInt();
-        mTimeHour = in.readInt();
-        mMessageContent = in.readString();
-        mChannelId = in.readString();
-        mChannelName = in.readString();
+    public void setmDays(ArrayList<Day> mDays) {
+        this.mDays = mDays;
+    }
+
+
+    //methodes
+
+    public String getDaysEnabled(){
+
+        ArrayList<String> strArray = new ArrayList<>();
+
+        for(int i = 0; i < mDays.size(); i++) {
+            switch ((byte) (mDays.get(i).isEnabled() ? 1 : 0)) {
+                case 1:
+                    strArray.add(mDays.get(i).getName());
+                    break;
+            }
+        }
+
+        String daysDisplay = "";
+        if(strArray.size() > 1) {
+
+            for (int i = 0; i < 2; i++) {
+
+                if (i == strArray.size() - 1) {
+
+                    daysDisplay = daysDisplay + strArray.get(i) + ".";
+                } else {
+
+                    daysDisplay = daysDisplay + strArray.get(i) + ", ";
+                }
+            }
+            daysDisplay = daysDisplay + "...";
+        }
+        else {
+            daysDisplay = strArray.get(0);
+        }
+        return daysDisplay;
     }
 }
