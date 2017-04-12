@@ -45,6 +45,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
 
     public final String FILE_NAME = "FILE_NAME";
+    public static final String BOT_SIGNATURE = "[MaterlessBot]";
 
     private Intent intent;
     private String ref;
@@ -102,6 +103,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
             buttonTimePicker.setText(mMessage.getmTimeHour() + ":" + mMessage.getmTimeMinute());
             buttonSelectDay.setText(arrayConverter(mMessage.getmDays()));
+            buttonChoseChannel.setText(mMessage.getmChannelName());
             mMessageName.setText(mMessage.getmName());
             mMessageContent.setText(mMessage.getmMessageContent());
             buttonCreateEvent.setText("Valider");
@@ -117,13 +119,25 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
                 final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
                 final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.removePrivateChan());
+                int checkboxId = 1;
+                if (intent.hasExtra("message")) {
+
+                    for (int i = 0; i < channelList.length; i++) {
+
+                        if (mMessage.getmChannelName().equals(channelList[i])) {
+                            checkboxId = i;
+                        }
+                    }
+                }
+
 
                 channelDialog.setTitle("Choisis ton canal de discussion");
-                channelDialog.setSingleChoiceItems(channelList, 1, new DialogInterface.OnClickListener() {
+                channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mChoosenChannelName = mChannelRequest.removePrivateChan().get(which).getDisplayName();
                         mChoosenChannelId = mChannelRequest.removePrivateChan().get(which).getId();
+
                         buttonChoseChannel.setText(mChoosenChannelName);
                         dialog.dismiss();
                     }
@@ -256,22 +270,24 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                if (!intent.hasExtra("message") && finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName == null || mMessageContent == null) {
+                if (finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName.getText() == null || mMessageContent.getText() == null) {
 
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
-                } else {
+                }
 
-                    if (finalDays != null) {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
-                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                        mRef.child(ref).setValue(editMessage);
-                        finish();
-                    } else {
-                        final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
-                        DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                        mRef.child(ref).setValue(editMessage);
-                        finish();
-                    }
+                else if(!intent.hasExtra("message")){
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.push().setValue(editMessage);
+                    finish();
+                }
+                else {
+
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.child(ref).setValue(editMessage);
+                    finish();
+
                 }
             }
         });
@@ -327,18 +343,23 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     public String arrayConverter(ArrayList<String> arrayList) {
 
         String daysDisplay = "";
+        if(arrayList.size() > 1) {
 
-        for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++) {
 
-            if (i == arrayList.size() - 1) {
+                if (i == arrayList.size() - 1) {
 
-                daysDisplay = daysDisplay + arrayList.get(i) + ".";
-            } else {
+                    daysDisplay = daysDisplay + arrayList.get(i) + ".";
+                } else {
 
-                daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+                    daysDisplay = daysDisplay + arrayList.get(i) + ", ";
+                }
             }
+            daysDisplay = daysDisplay + "...";
         }
-        daysDisplay = daysDisplay + "...";
+        else {
+            daysDisplay = arrayList.get(0);
+        }
         return daysDisplay;
     }
 

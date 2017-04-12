@@ -39,6 +39,7 @@ public class ChannelRequest {
             if (channels.get(i).getDisplayName() != "") {
 
                 publicChan.add(channels.get(i));
+
             }
         }
         return publicChan;
@@ -46,10 +47,12 @@ public class ChannelRequest {
 
     public java.lang.String[] getChannelNames(ArrayList<Channel> channels) {
 
-        java.lang.String[] strings = new java.lang.String[channels.size()];
-        for (int i = 0; i < channels.size(); i++) {
+        java.lang.String[] strings = new java.lang.String[removePrivateChan().size()];
 
-            strings[i] = (channels.get(i).getDisplayName());
+        for (int i = 0; i < removePrivateChan().size(); i++) {
+            if (removePrivateChan().get(i).getDisplayName().length() != 0 ) {
+                strings[i] = (removePrivateChan().get(i).getDisplayName());
+            }
         }
         return strings;
     }

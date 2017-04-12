@@ -32,6 +32,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private TextView textViewMessageDetailsHour;
     private TextView textViewMessageDetailsContent;
     private TextView textViewMessageDetailsDays;
+    private TextView textViewChannel;
 
     private String ref;
 
@@ -55,6 +56,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         textViewMessageDetailsHour = (TextView) findViewById(R.id.textViewMessageDetailsHour);
         textViewMessageDetailsTitle = (TextView) findViewById(R.id.textViewMessageDetailsTitle);
         textViewMessageDetailsDays = (TextView) findViewById(R.id.textViewMessageDetailsDays);
+        textViewChannel = (TextView) findViewById(R.id.textViewChannel);
 
         intent = getIntent();
 
@@ -65,6 +67,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         textViewMessageDetailsDays.setText(arrayConverter(message.getmDays()));
         textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
+        textViewChannel.setText(message.getmChannelName());
 
         buttonMessageDetailsEdit.setOnClickListener(new View.OnClickListener() {
             @Override

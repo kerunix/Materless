@@ -91,7 +91,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
                 Post post = new Post();
                 post.setMessage(arrayListMessage.get(messageNumber).getmMessageContent());
-                post.setChannelId("bfsnn43zfpne3m877s66a454ih");
+                post.setChannelId(arrayListMessage.get(messageNumber).getmChannelId());
                 String token = muserCredentials.getToken();
                 MattermostService sendPost = ServiceGenerator.RETROFIT.create(MattermostService.class);
                 Call<Post> callPost = sendPost.sendPost( ("Bearer " + muserCredentials.getToken()), post );
