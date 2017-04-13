@@ -177,8 +177,9 @@ public class MyService extends Service {
 
             if (message.getmDays().get(i).isEnabled()) {
 
-
-                calendar.set(Calendar.DAY_OF_WEEK, i);
+                String str = message.getmDays().get(i).getName();
+                calendar.set(Calendar.DAY_OF_WEEK, i + 1);
+                int day = calendar.get(Calendar.DAY_OF_WEEK);
                 calendar.set(Calendar.HOUR_OF_DAY, message.getmTimeHour());
                 calendar.set(Calendar.MINUTE, message.getmTimeMinute());
 
