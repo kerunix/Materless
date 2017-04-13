@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class MyService extends Service {
 
@@ -177,11 +178,14 @@ public class MyService extends Service {
 
             if (message.getmDays().get(i).isEnabled()) {
 
-                String str = message.getmDays().get(i).getName();
                 calendar.set(Calendar.DAY_OF_WEEK, i + 1);
-                int day = calendar.get(Calendar.DAY_OF_WEEK);
                 calendar.set(Calendar.HOUR_OF_DAY, message.getmTimeHour());
                 calendar.set(Calendar.MINUTE, message.getmTimeMinute());
+                long timeToALaram = calendar.getTimeInMillis();
+
+                if(calendar.getTimeInMillis() < System.currentTimeMillis() - alarmManager.INTERVAL_HALF_HOUR /2){
+                    timeToALaram += (alarmManager.INTERVAL_DAY * 7);
+                }
 
                 Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
                 intentToAlarm_Receiver.putExtra(MESSAGE_NAME, message.getmName());
@@ -193,7 +197,7 @@ public class MyService extends Service {
                         intentToAlarm_Receiver,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmManager.INTERVAL_DAY * 7, myPendingIntent);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeToALaram, alarmManager.INTERVAL_DAY * 7, myPendingIntent);
                 Log.d(TAG, "yattaaaaaaa");
 
 

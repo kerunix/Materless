@@ -1,37 +1,20 @@
 package matterless.fr.wcs.matterless;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.style.ClickableSpan;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Map;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.http.POST;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imageViewBigButtonMainActivity;
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
+
+    private boolean botLaunched;
 
 
     @Override
@@ -57,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewBigButtonMainActivity = (ImageView) findViewById(R.id.imageViewBigButtonMainActivity);
         imageViewBigButtonMainActivity.setOnClickListener(this);
 
+        botLaunched = true;
 
         try {
             mfileInputStream = openFileInput(FILE_NAME);
@@ -108,7 +94,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             case R.id.imageViewBigButtonMainActivity:
-
+                if (botLaunched) {
+                    Intent toService = new Intent(MainActivity.this, MyService.class);
+                    toService.setAction(MyService.INTENT_STOP_BOT);
+                    startService(toService);
+                    imageViewBigButtonMainActivity.setImageDrawable(getResources().getDrawable(R.drawable.red));
+                    botLaunched = false;
+                }
+                else{
+                    Intent toService = new Intent(MainActivity.this, MyService.class);
+                    toService.setAction(MyService.INTENT_START_BOT);
+                    startService(toService);
+                    imageViewBigButtonMainActivity.setImageDrawable(getResources().getDrawable(R.drawable.green));
+                    botLaunched = true;
+                }
 
                 break;
         }
