@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 calendar.set(Calendar.MINUTE, arrayListMessage.get(i).getmTimeMinute());
 
                                 Intent intentToAlarm_Receiver = new Intent(MainActivity.this, Alarm_Receiver.class);
-                                intentToAlarm_Receiver.putExtra(MESSAGE_NUMBER, i);
+                                intentToAlarm_Receiver.putExtra(MESSAGE_NUMBER, 666);
                                 String requestCode = String.valueOf(i) + String.valueOf(j);
                                 PendingIntent myPendingIntent = PendingIntent.getBroadcast(MainActivity.this,
                                         Integer.parseInt(requestCode),

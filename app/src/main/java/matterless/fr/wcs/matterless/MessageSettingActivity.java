@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +46,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
 
     public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = "[MaterlessBot]";
+    public static final String BOT_SIGNATURE = "[MaterlessBot] ";
 
     private Intent intent;
     private String ref;
@@ -54,6 +55,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
     private Button buttonChoseChannel;
+
+    private CheckBox checkBoxSignature;
 
     private EditText mMessageName;
     private EditText mMessageContent;
@@ -87,6 +90,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         final Message mMessage = intent.getParcelableExtra("message");
         ref = intent.getStringExtra("ref");
 
+        checkBoxSignature = (CheckBox) findViewById(R.id.checkBoxSignature);
 
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
@@ -270,20 +274,25 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                if (finalDays.size() == 0 || timeHour == 0 || timeMinute == 0 || mMessageName.getText() == null || mMessageContent.getText() == null) {
+                String finalContent = mMessageContent.getText().toString();
+                if (checkBoxSignature.isChecked()) {
 
-                    Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
+
+                    finalContent = BOT_SIGNATURE + finalContent;
+
                 }
 
-                else if(!intent.hasExtra("message")){
-                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+
+                if (finalDays.size() == 0 || mMessageName.getText() == null || mMessageContent.getText() == null) {
+                    Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
+                } else if (!intent.hasExtra("message")) {
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, finalContent, mChoosenChannelId, mChoosenChannelName);
                     DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.push().setValue(editMessage);
                     finish();
-                }
-                else {
+                } else {
 
-                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, mMessageContent.getText().toString(), mChoosenChannelId, mChoosenChannelName);
+                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, finalContent, mChoosenChannelId, mChoosenChannelName);
                     DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.child(ref).setValue(editMessage);
                     finish();
@@ -327,8 +336,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onFailure(Call<ChannelRequest> call, Throwable t) {
                 Log.e(MainActivity.TAG, t.toString());
-
-
             }
         });
     }
@@ -362,5 +369,4 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         }
         return daysDisplay;
     }
-
 }

@@ -28,9 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by wilder on 04/04/17.
- */
 
 public class Alarm_Receiver extends BroadcastReceiver {
 
