@@ -16,6 +16,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public final String FILE_NAME = "FILE_NAME";
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imageViewBigButtonMainActivity;
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
+    private PulsatorLayout pulsator;
 
     private boolean botLaunched;
 
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonMyProfile.setOnClickListener(this);
         imageViewBigButtonMainActivity = (ImageView) findViewById(R.id.imageViewBigButtonMainActivity);
         imageViewBigButtonMainActivity.setOnClickListener(this);
+
+        pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
+        pulsator.start();
 
         botLaunched = true;
 
@@ -99,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toService.setAction(MyService.INTENT_STOP_BOT);
                     startService(toService);
                     imageViewBigButtonMainActivity.setImageDrawable(getResources().getDrawable(R.drawable.red));
+                    pulsator.stop();
                     botLaunched = false;
                 }
                 else{
@@ -106,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toService.setAction(MyService.INTENT_START_BOT);
                     startService(toService);
                     imageViewBigButtonMainActivity.setImageDrawable(getResources().getDrawable(R.drawable.green));
+                    pulsator.start();
                     botLaunched = true;
                 }
 

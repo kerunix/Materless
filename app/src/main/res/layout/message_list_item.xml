@@ -7,7 +7,8 @@
         android:id="@+id/textViewMessageName"
         android:textColor="@color/white"
         android:textSize="@dimen/activity_horizontal_margin"
-        android:background="@drawable/buttonshape"
+        android:background="@drawable/custom_list"
+        android:gravity="center"
         android:textAllCaps="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
