@@ -14,7 +14,7 @@ import android.widget.Toast;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Calendar;
+
 
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
@@ -116,9 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     pulsator.start();
                     botLaunched = true;
                 }
-
                 break;
         }
-
     }
 }

@@ -18,9 +18,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by wilder on 04/04/17.
- */
 
 public class Alarm_Receiver extends BroadcastReceiver {
 
@@ -58,6 +55,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification noti = new Notification.Builder(context)

@@ -32,6 +32,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private TextView textViewMessageDetailsHour;
     private TextView textViewMessageDetailsContent;
     private TextView textViewMessageDetailsDays;
+    private TextView textViewChannel;
 
     private String ref;
 
@@ -42,7 +43,15 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private UserCredentials muserCredentials;
 
 
-
+    /* Activity assez simple, on récupère le Message en intent et on affiche ses attributs dans
+    * les views associées.
+    *
+    * Le bouton editMessage permet d'accéder à la message settings activity en passant en intent
+    * le message affiché pour en modifier les caractéristiques.
+    *
+    * Le bouton deleteMessage affiche un AlertDialog pour que l'user confirme la suppression.
+    * En cas de validation, on supprime le message de firebase et de la listView.
+    * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +64,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         textViewMessageDetailsHour = (TextView) findViewById(R.id.textViewMessageDetailsHour);
         textViewMessageDetailsTitle = (TextView) findViewById(R.id.textViewMessageDetailsTitle);
         textViewMessageDetailsDays = (TextView) findViewById(R.id.textViewMessageDetailsDays);
+        textViewChannel = (TextView) findViewById(R.id.textViewChannel);
 
         intent = getIntent();
 
@@ -65,6 +75,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         textViewMessageDetailsDays.setText(message.getDaysEnabled());
         textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
+        textViewChannel.setText(message.getmChannelName());
 
         buttonMessageDetailsEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,22 +137,5 @@ public class MessageDetailsActivity extends AppCompatActivity {
         super.onStop();
 
         muserCredentials = null;
-    }
-
-    public String arrayConverter(ArrayList<String> arrayList) {
-
-        String daysDisplay = "";
-
-        for (int i = 0; i < arrayList.size(); i++) {
-
-            if (i == arrayList.size()-1) {
-
-                daysDisplay = daysDisplay + arrayList.get(i) + ".";
-            } else {
-
-                daysDisplay = daysDisplay + arrayList.get(i) + ", ";
-            }
-        }
-        return daysDisplay;
     }
 }

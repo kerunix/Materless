@@ -31,20 +31,21 @@ public class ChannelRequest {
         this.members = members;
     }
 
+    public ArrayList<Channel> getPublicChannel () {
 
+        ArrayList<Channel> publicChan = new ArrayList<>();
+        for (int i = 0; i < channels.size(); i ++) {
 
-    public ArrayList<Channel> getPublicChannel() {
+            if (channels.get(i).getDisplayName() != "") {
 
-        ArrayList<Channel> arrayList = new ArrayList<>();
-        for (int i = 0; i < channels.size(); i++) {
-            if (channels.get(i).getDisplayName().length() != 0) {
-                arrayList.add(channels.get(i));
+                publicChan.add(channels.get(i));
+
             }
         }
-        return arrayList;
+        return publicChan;
     }
 
-    public java.lang.String[] getChannelNames() {
+    public java.lang.String[] getChannelNames(ArrayList<Channel> channels) {
 
         java.lang.String[] strings = new java.lang.String[getPublicChannel().size()];
 
