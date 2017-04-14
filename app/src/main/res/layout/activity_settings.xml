@@ -37,31 +37,13 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="185dp"
-        app:layout_constraintBottom_toTopOf="@+id/switchGeolocActivation"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
-        android:visibility="invisible"/>
-
-    <Switch
-        android:id="@+id/switchGeolocActivation"
-        android:layout_width="324dp"
-        android:layout_height="75dp"
-        android:text="@string/useGeolocSwitchTest"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLog"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="372dp"
-        tools:layout_editor_absoluteX="-37dp" />
+        android:visibility="invisible"
+        tools:layout_editor_absoluteY="129dp" />
 
     <Button
         android:id="@+id/buttonLog"
