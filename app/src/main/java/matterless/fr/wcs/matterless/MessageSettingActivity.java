@@ -46,7 +46,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
 
     public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = "[MaterlessBot] ";
+    public static final String BOT_SIGNATURE = "[MaterlessBot] ";   // signature du bot, à ajouter
+                                                                    // si choisi par le user
 
     private Intent intent;
     private String ref;
@@ -96,6 +97,13 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         finalDays = new ArrayList<>();
 
+        /*
+        * Je regarde si l'intent qui démarre l'activity contient une instance de Message pour savoir
+        * si l'user est en train d'éditer un message existant ou si il en crée un.
+        *
+        * S'il y a un message dans l'intent, j'en affiche les caractéristiques dans les Views associées
+        * */
+
         if (intent.hasExtra("message")) {
 
 
@@ -111,9 +119,21 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         else {
             mFutureMessage = new Message(getResources().getStringArray(R.array.daysOfWeekArray));
+            Calendar calendar = Calendar.getInstance();
+            mFutureMessage.setmTimeHour(calendar.get(Calendar.HOUR_OF_DAY));
+            mFutureMessage.setmTimeMinute(calendar.get(Calendar.MINUTE));
         }
 
-
+        /*
+        * AlertDialog qui affiche les channels de discussion de l'utilisateur actuellement connecté
+        * et propose de choisir.
+        *
+        * On vérifie également si l'intent qui commence l'activity contient
+        * déjà une instance de Message.
+        *
+        * Si oui on coche en avance le channel sur lequel ce message
+        * devait s'envoyer
+        * */
         buttonChoseChannel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +152,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 }
 
 
-                channelDialog.setTitle("Choisis ton canal de discussion");
+                channelDialog.setTitle(R.string.choseChannelButtonText);
                 channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -146,6 +166,17 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             }
         });
 
+
+        /*
+        * Liste de  7 Booleans, tous false, qui sera passé en paramètre à mon AlertDialogBuilder pour
+        * la sélection des jours de la semaine.
+        *
+        * Ils permettent d'afficher des cases cochées ou non dans l'AlertDialog à choix multiples.
+        *
+        * Je vérifie une fois de plus si l'intent contenait une instance de Message, et modifie le
+        * tableau de booleans en conséquence pour cocher certaines cases en fonction des jours
+        * programmés si le message doit être édité et non créé
+        * */
         final boolean[] _selections = {false, false, false, false, false, false, false};
 
         if (intent.hasExtra("message")) {
@@ -162,6 +193,13 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             }
         }
 
+        /*
+        * AlertDialogBuilder qui affiche la liste de jours définie en ressources, et qui permet de
+        * sélectionner un ou plusieurs jours pour l'envoi du message.
+        *
+        * Le onCheckedChangeListenerajoute ou enlève des jours à la liste de Days de l'objet message
+        * en fonction des actionsde l'user et le bouton valider affiche les jours dans le boutton.
+        * */
         buttonSelectDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,6 +245,15 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             }
         });
 
+        /* timePickerDialog qui s'ouvre par défaut à l'heure actuelle et permet à l'user de choisir
+        * l'heure d'envoi du message.
+        *
+        * On vérifie une fois de plus si l'intent contient un Message
+        * et on affiche l'heure de ce dernier plutot que celle du systeme si c'est le cas
+        *
+        * Quand l'user termine, les timeHour et timeMinute du message sont
+        * mis à jours et le text du bouton affiche l'heure choisie.
+        * */
         buttonTimePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,41 +273,59 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                         mFutureMessage.setmTimeHour(selectedHour);
                         mFutureMessage.setmTimeMinute(selectedMinute);
 
+                        //ce if/else gère le cas où l'user choisis une minute inférieure à 10
+                        //pour ajouter un 0 avant dans le text du bouton
                         if (mFutureMessage.getmTimeMinute() < 10) {
                             buttonTimePicker.setText(mFutureMessage.getmTimeHour() + ":0" + mFutureMessage.getmTimeMinute());
                         } else {
                             buttonTimePicker.setText(mFutureMessage.getmTimeHour() + ":" + mFutureMessage.getmTimeMinute());
                         }
                     }
-                }, hour, minute, true);//Yes 24 hour time
+                }, hour, minute, true);
                 mTimePicker.show();
             }
         });
 
+
+        /* En cas de clic sur le bouton valider, on crée une String qui contient le contenu de
+        * l'editTextMessageContent et on vérifie si l'user a choisi d'ajouter la signatue ou non.
+        *
+        * On ajoute à cette string la signature en fonction du choix de l'user.
+        *
+        * On vérifie ensuite si l'utilisateur a bien rempli tout les champs. On affiche un toast le
+        * cas échéant.
+        *
+        * Si tout les champs sont remplis on vérifie si l'user était en mode création ou édition.
+        *
+        *   En édition on crée une nouvelle instance de message et on l'upload sur firebase à la place de
+        *   l'objet précédent.
+        *
+        *   En création on crée une nouvelle instance de message et on l'upload sur firebase sur un
+        *   nouvel emplacement.
+        *
+        * On tue ensuite l'activity.
+        * */
         buttonCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
                 String finalContent = mEditTextMessageContent.getText().toString();
+
                 if (checkBoxSignature.isChecked()) {
 
 
                     finalContent = BOT_SIGNATURE + finalContent;
                 }
 
-                if (!intent.hasExtra("message") && mFutureMessage.getDaysEnabled().length() == 0 || mFutureMessage.getmTimeHour() == 0 || mFutureMessage.getmTimeMinute() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
+                if (mFutureMessage.getDaysEnabled().length() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
 
-                }
-
-
-                if (finalDays.size() == 0 || mEditTextMessageName.getText() == null || mEditTextMessageContent.getText() == null) {
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }
 
                 else if(!intent.hasExtra("message")){
                     mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
-                    mFutureMessage.setmMessageContent(mEditTextMessageContent.getText().toString().trim());
+                    mFutureMessage.setmMessageContent(finalContent.trim());
 
                     mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.push().setValue(mFutureMessage);
@@ -268,7 +333,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 }
                 else {
                     mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
-                    mFutureMessage.setmMessageContent(mEditTextMessageContent.getText().toString().trim());
+                    mFutureMessage.setmMessageContent(finalContent.trim());
 
                     mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.child(ref).setValue(mFutureMessage);

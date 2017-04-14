@@ -56,5 +56,6 @@
     <string name="buttonPickChannel">Choisi le canal où envoyer le message</string>
     <string name="checkBpxSignature">Ajouter à mon message la signature de l\'application</string>
     <string name="ValidateButton">Valider</string>
+    <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
 
 </resources>

@@ -136,6 +136,10 @@ public abstract class FirebaseListAdapter<Message> extends BaseAdapter {
         mKeys.clear();
     }
 
+    /* Methode custom qui permet d'obtenir la clef firebase d'un objet en fonction de son indice dans
+    * une liste. Je cible l'indice i de la liste de keys du firebase list adapter, i étant renvoyé par
+    * la méthode getPosition du customListAdapter
+    * */
     public String getmKey(int i) {
 
         return mKeys.get(i);

@@ -7,9 +7,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-/**
- * Created by wilder on 11/04/17.
- */
 
 public class CustomPolice extends AppCompatTextView {
     public CustomPolice(Context context, AttributeSet attrs) {

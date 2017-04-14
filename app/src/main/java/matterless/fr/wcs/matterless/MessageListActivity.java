@@ -17,14 +17,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-public class MessageListActivity extends AppCompatActivity implements View.OnClickListener {
+public class MessageListActivity extends AppCompatActivity {
 
 
     public final String FILE_NAME = "FILE_NAME";
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
-
-    private Intent intent;
 
     private ListView mListViewMessage;
 
@@ -45,8 +43,6 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
         mListViewMessage = (ListView) findViewById(R.id.listViewMessage);
         buttonAddEvent = (Button) findViewById(R.id.buttonAddEvent);
-        buttonAddEvent.setOnClickListener(this);
-
     }
 
     @Override
@@ -75,6 +71,12 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
 
         mListViewMessage.setAdapter(mAdapter);
 
+        /*On item click listener sur la liste pour lance le profil du message,
+        *
+        * Je passe en intent l'instance de Message concernée pour afficher ses caractéristiques,
+        * et sa position dans la liste pour gérer sa suppression par l'utilisateur si besoin
+        * */
+
         mListViewMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,10 +85,22 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
                 Message message = (Message) mAdapter.getItem(position);
 
                 String ref = mAdapter.getmKey(position);
-                intent.putExtra("message", message);
-                intent.putExtra("ref", ref);
+                intent.putExtra("message", message); //instance de message
+                intent.putExtra("ref", ref); //position dans la liste
 
                 startActivity(intent);
+            }
+        });
+
+        /* onClickListener sur le bouton addEvent.
+        *
+        * On lance la messageSettingActivity pour ajouter un événement à la liste
+        * */
+        buttonAddEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
+                startActivity(intentToMessageSetting);
             }
         });
     }
@@ -96,16 +110,5 @@ public class MessageListActivity extends AppCompatActivity implements View.OnCli
         super.onStop();
 
         muserCredentials = null;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()){
-            case R.id.buttonAddEvent:
-                Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
-                startActivity(intentToMessageSetting);
-                break;
-        }
     }
 }
