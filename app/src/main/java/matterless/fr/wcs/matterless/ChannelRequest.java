@@ -31,7 +31,7 @@ public class ChannelRequest {
         this.members = members;
     }
 
-    public ArrayList<Channel> removePrivateChan () {
+    public ArrayList<Channel> getPublicChannel () {
 
         ArrayList<Channel> publicChan = new ArrayList<>();
         for (int i = 0; i < channels.size(); i ++) {
@@ -47,11 +47,11 @@ public class ChannelRequest {
 
     public java.lang.String[] getChannelNames(ArrayList<Channel> channels) {
 
-        java.lang.String[] strings = new java.lang.String[removePrivateChan().size()];
+        java.lang.String[] strings = new java.lang.String[getPublicChannel().size()];
 
-        for (int i = 0; i < removePrivateChan().size(); i++) {
-            if (removePrivateChan().get(i).getDisplayName().length() != 0 ) {
-                strings[i] = (removePrivateChan().get(i).getDisplayName());
+        for (int i = 0; i < getPublicChannel().size(); i++) {
+            if (getPublicChannel().get(i).getDisplayName().length() != 0 ) {
+                strings[i] = (getPublicChannel().get(i).getDisplayName());
             }
         }
         return strings;

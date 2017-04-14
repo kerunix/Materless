@@ -64,7 +64,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         ref = intent.getStringExtra("ref");
 
         textViewMessageDetailsTitle.setText(message.getmName());
-        textViewMessageDetailsDays.setText(arrayConverter(message.getmDays()));
+        textViewMessageDetailsDays.setText(message.getDaysEnabled());
         textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
         textViewChannel.setText(message.getmChannelName());

@@ -58,23 +58,18 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
     private CheckBox checkBoxSignature;
 
-    private EditText mMessageName;
-    private EditText mMessageContent;
+    private EditText mEditTextMessageName;
+    private EditText mEditTextMessageContent;
 
+    private Message mFutureMessage;
     private ArrayList<String> finalDays;
-    private String[] mDayList;
-    private int timeMinute;
-    private int timeHour;
 
     private ChannelRequest mChannelRequest;
-    private String mChoosenChannelName;
-    private String mChoosenChannelId;
+    private FirebaseDatabase database;
+    private DatabaseReference mRef;
 
     private int hour;
     private int minute;
-
-    private FirebaseDatabase database;
-    private DatabaseReference mRef;
 
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
@@ -87,7 +82,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         database = FirebaseDatabase.getInstance();
 
         intent = getIntent();
-        final Message mMessage = intent.getParcelableExtra("message");
         ref = intent.getStringExtra("ref");
 
         checkBoxSignature = (CheckBox) findViewById(R.id.checkBoxSignature);
@@ -97,23 +91,26 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         buttonCreateEvent = (Button) findViewById(R.id.buttonCreateEvent);
         buttonChoseChannel = (Button) findViewById(R.id.buttonChoseChannel);
 
-        mMessageName = (EditText) findViewById(R.id.editTextMessageName);
-        mMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
+        mEditTextMessageName = (EditText) findViewById(R.id.editTextMessageName);
+        mEditTextMessageContent = (EditText) findViewById(R.id.editTextMessageContent);
 
-        mDayList = getResources().getStringArray(R.array.daysOfWeekArray);
         finalDays = new ArrayList<>();
 
         if (intent.hasExtra("message")) {
 
-            buttonTimePicker.setText(mMessage.getmTimeHour() + ":" + mMessage.getmTimeMinute());
-            buttonSelectDay.setText(arrayConverter(mMessage.getmDays()));
-            buttonChoseChannel.setText(mMessage.getmChannelName());
-            mMessageName.setText(mMessage.getmName());
-            mMessageContent.setText(mMessage.getmMessageContent());
-            buttonCreateEvent.setText("Valider");
-            timeHour = mMessage.getmTimeHour();
-            timeMinute = mMessage.getmTimeMinute();
 
+            mFutureMessage = intent.getParcelableExtra("message");
+
+            buttonTimePicker.setText(mFutureMessage.getmTimeHour() + ":" + mFutureMessage.getmTimeMinute());
+            buttonSelectDay.setText(mFutureMessage.getDaysEnabled());
+            mEditTextMessageName.setText(mFutureMessage.getmName());
+            mEditTextMessageContent.setText(mFutureMessage.getmMessageContent());
+            buttonCreateEvent.setText(R.string.ValidateButton);
+
+        }
+
+        else {
+            mFutureMessage = new Message(getResources().getStringArray(R.array.daysOfWeekArray));
         }
 
 
@@ -122,13 +119,13 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             public void onClick(View v) {
 
                 final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
-                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.removePrivateChan());
+                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getPublicChannel());
                 int checkboxId = 1;
                 if (intent.hasExtra("message")) {
 
                     for (int i = 0; i < channelList.length; i++) {
 
-                        if (mMessage.getmChannelName().equals(channelList[i])) {
+                        if (mFutureMessage.getmChannelName().equals(channelList[i])) {
                             checkboxId = i;
                         }
                     }
@@ -139,10 +136,10 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mChoosenChannelName = mChannelRequest.removePrivateChan().get(which).getDisplayName();
-                        mChoosenChannelId = mChannelRequest.removePrivateChan().get(which).getId();
 
-                        buttonChoseChannel.setText(mChoosenChannelName);
+                        mFutureMessage.setmChannelName(mChannelRequest.getPublicChannel().get(which).getDisplayName());
+                        mFutureMessage.setmChannelId(mChannelRequest.getPublicChannel().get(which).getId());
+                        buttonChoseChannel.setText(mFutureMessage.getmChannelName());
                         dialog.dismiss();
                     }
                 }).show();
@@ -153,43 +150,13 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         if (intent.hasExtra("message")) {
 
-            for (int i = 0; i < mMessage.getmDays().size(); i++) {
+            for (int i = 0; i < mFutureMessage.getmDays().size(); i++) {
 
-                switch (mMessage.getmDays().get(i)) {
+                switch (mFutureMessage.getmDays().get(i).isEnabled() ? 1 : 0) {
 
-                    case "Lundi":
-                        _selections[0] = true;
-                        finalDays.add(mDayList[0]);
-                        break;
-
-                    case "Mardi":
-                        _selections[1] = true;
-                        finalDays.add(mDayList[1]);
-                        break;
-
-                    case "Mercredi":
-                        _selections[2] = true;
-                        finalDays.add(mDayList[2]);
-                        break;
-
-                    case "Jeudi":
-                        _selections[3] = true;
-                        finalDays.add(mDayList[3]);
-                        break;
-
-                    case "Vendredi":
-                        _selections[4] = true;
-                        finalDays.add(mDayList[4]);
-                        break;
-
-                    case "Samedi":
-                        _selections[5] = true;
-                        finalDays.add(mDayList[5]);
-                        break;
-
-                    case "Dimanche":
-                        _selections[6] = true;
-                        finalDays.add(mDayList[6]);
+                    case 1:
+                        _selections[i] = true;
+                        mFutureMessage.getmDays().get(i).setEnabled(true);
                         break;
                 }
             }
@@ -200,7 +167,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             public void onClick(View v) {
 
                 final AlertDialog.Builder dayDialog = new AlertDialog.Builder(MessageSettingActivity.this);
-                final String[] day = mDayList;
+                final String[] day = getResources().getStringArray(R.array.daysOfWeekArray);
 
                 dayDialog.setTitle("Choisis tes jours");
 
@@ -211,9 +178,9 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
                         if (isChecked) {
-                            finalDays.add(mDayList[which]);
+                            mFutureMessage.getmDays().get(which).setEnabled(true);
                         } else if (!isChecked) {
-                            finalDays.remove(mDayList[which]);
+                            mFutureMessage.getmDays().get(which).setEnabled(false);
                         }
 
                     }
@@ -224,7 +191,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        buttonSelectDay.setText(arrayConverter(finalDays));
+                        buttonSelectDay.setText(mFutureMessage.getDaysEnabled());
                         dialog.dismiss();
                     }
                 });
@@ -246,8 +213,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 Calendar mcurrentTime = Calendar.getInstance();
 
                 if (intent.hasExtra("message")) {
-                    hour = mMessage.getmTimeHour();
-                    minute = mMessage.getmTimeMinute();
+                    hour = mFutureMessage.getmTimeHour();
+                    minute = mFutureMessage.getmTimeMinute();
                 } else {
                     hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                     minute = mcurrentTime.get(Calendar.MINUTE);
@@ -256,13 +223,13 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                 mTimePicker = new TimePickerDialog(MessageSettingActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        timeHour = selectedHour;
-                        timeMinute = selectedMinute;
+                        mFutureMessage.setmTimeHour(selectedHour);
+                        mFutureMessage.setmTimeMinute(selectedMinute);
 
-                        if (timeMinute < 10) {
-                            buttonTimePicker.setText(timeHour + ":0" + timeMinute);
+                        if (mFutureMessage.getmTimeMinute() < 10) {
+                            buttonTimePicker.setText(mFutureMessage.getmTimeHour() + ":0" + mFutureMessage.getmTimeMinute());
                         } else {
-                            buttonTimePicker.setText(timeHour + ":" + timeMinute);
+                            buttonTimePicker.setText(mFutureMessage.getmTimeHour() + ":" + mFutureMessage.getmTimeMinute());
                         }
                     }
                 }, hour, minute, true);//Yes 24 hour time
@@ -274,29 +241,38 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                String finalContent = mMessageContent.getText().toString();
+
+                String finalContent = mEditTextMessageContent.getText().toString();
                 if (checkBoxSignature.isChecked()) {
 
 
                     finalContent = BOT_SIGNATURE + finalContent;
+                }
+
+                if (!intent.hasExtra("message") && mFutureMessage.getDaysEnabled().length() == 0 || mFutureMessage.getmTimeHour() == 0 || mFutureMessage.getmTimeMinute() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
 
                 }
 
 
-                if (finalDays.size() == 0 || mMessageName.getText() == null || mMessageContent.getText() == null) {
+                if (finalDays.size() == 0 || mEditTextMessageName.getText() == null || mEditTextMessageContent.getText() == null) {
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
-                } else if (!intent.hasExtra("message")) {
-                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, finalContent, mChoosenChannelId, mChoosenChannelName);
-                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                    mRef.push().setValue(editMessage);
-                    finish();
-                } else {
+                }
 
-                    final Message editMessage = new Message(mMessageName.getText().toString(), finalDays, timeMinute, timeHour, finalContent, mChoosenChannelId, mChoosenChannelName);
-                    DatabaseReference mRef = database.getReference("Messages/" + muserCredentials.getUserID());
-                    mRef.child(ref).setValue(editMessage);
-                    finish();
+                else if(!intent.hasExtra("message")){
+                    mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
+                    mFutureMessage.setmMessageContent(mEditTextMessageContent.getText().toString().trim());
 
+                    mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.push().setValue(mFutureMessage);
+                    finish();
+                }
+                else {
+                    mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
+                    mFutureMessage.setmMessageContent(mEditTextMessageContent.getText().toString().trim());
+
+                    mRef = database.getReference("Messages/" + muserCredentials.getUserID());
+                    mRef.child(ref).setValue(mFutureMessage);
+                    finish();
                 }
             }
         });
@@ -345,28 +321,5 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         super.onStop();
 
         muserCredentials = null;
-    }
-
-    public String arrayConverter(ArrayList<String> arrayList) {
-
-        String daysDisplay = "";
-        if(arrayList.size() > 1) {
-
-            for (int i = 0; i < 2; i++) {
-
-                if (i == arrayList.size() - 1) {
-
-                    daysDisplay = daysDisplay + arrayList.get(i) + ".";
-                } else {
-
-                    daysDisplay = daysDisplay + arrayList.get(i) + ", ";
-                }
-            }
-            daysDisplay = daysDisplay + "...";
-        }
-        else {
-            daysDisplay = arrayList.get(0);
-        }
-        return daysDisplay;
     }
 }

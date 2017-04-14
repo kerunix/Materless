@@ -3,6 +3,7 @@
     package="matterless.fr.wcs.matterless">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -20,8 +21,21 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".MessageListActivity" />
         <activity android:name=".MessageSettingActivity" />
-        <activity android:name=".MessageDetailsActivity"/>
-        <receiver android:name=".Alarm_Receiver" />
+        <activity android:name=".MessageDetailsActivity" />
+        <receiver android:name=".Alarm_Receiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED">
+                    <category android:name="android.intent.category.HOME">
+                    </category>
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>
