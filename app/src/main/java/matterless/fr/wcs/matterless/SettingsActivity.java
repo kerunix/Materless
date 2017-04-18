@@ -62,8 +62,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonlog = (Button) findViewById(R.id.buttonLog);
         buttonTutorial= (Button) findViewById(R.id.buttonTutorial);
-            buttonTutorial.setOnClickListener(this);
-            buttonlog.setOnClickListener(this);
+        buttonTutorial.setOnClickListener(this);
+        buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
 
         try {
@@ -240,7 +240,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                                         if (responseUser.isSuccessful()) {
                                             // usersLogin object available
-                                            setProfileVisible();
 
                                             userProfile = responseUser.body();
                                             String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
@@ -271,6 +270,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                             toService.setAction(MyService.INTENT_START_BOT);
                                             startService(toService);
 
+                                            setProfileVisible();
 
                                             MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
                                             Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + authToken, imageUrl);

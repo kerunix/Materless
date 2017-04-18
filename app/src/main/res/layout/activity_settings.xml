@@ -41,7 +41,6 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
-        android:visibility="invisible"
         android:layout_marginBottom="229dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonLog" />
 
