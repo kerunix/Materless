@@ -9,13 +9,13 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TutorialActivity extends AppCompatActivity {
 
     private ArrayList<String> mTutorialList;
-    private String[] mTutorialArrayRessource;
     private TutoListAdapter mAdapter;
     private ListView mListViewTutorial;
     private Button mBackMenuButton;
@@ -26,14 +26,8 @@ public class TutorialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tutorial);
 
         mBackMenuButton = (Button) findViewById(R.id.buttonBackMenuTuto);
-        mTutorialList = new ArrayList<>();
+        mTutorialList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.tutorialArray)));
         mListViewTutorial = (ListView) findViewById(R.id.listViewTutorial);
-        mTutorialArrayRessource = getResources().getStringArray(R.array.tutorialArray);
-
-        for (int i = 0; i < mTutorialArrayRessource.length; i++) {
-
-            mTutorialList.add(mTutorialArrayRessource[i]);
-        }
 
         mAdapter = new TutoListAdapter(this, R.layout.text_view_tuto_item, mTutorialList);
         mListViewTutorial.setAdapter(mAdapter);
@@ -41,8 +35,6 @@ public class TutorialActivity extends AppCompatActivity {
         mBackMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TutorialActivity.this, MainActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
