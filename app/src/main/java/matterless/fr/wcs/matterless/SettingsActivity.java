@@ -49,11 +49,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private FileInputStream mfileInputStream;
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
     public final String FILE_NAME = "FILE_NAME";
-    public final String EMAIL = "EMAIL";
-    public final String PASSWORD = "PASSWORD";
-    public final String TOKEN = "TOKEN";
-    public final String USER_NAME = "USER_NAME";
-    public final String IMAGE_URL = "IMAGE_URL";
     private ImageView imageViewProfilePicture;
 
     @Override
