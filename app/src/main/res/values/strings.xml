@@ -15,10 +15,10 @@
 
     <!-- MessageSettingsActivity -->
 
-    <string name="textViewMyEventsSettingsText">Créé ton message</string>
+    <string name="textViewMyEventsSettingsText">Créé ton événement</string>
     <string name="textViewMesageContentDescriptionText">Entre le message que tu souhaites ci dessous, tu peux ajouter des liens vers des images, des vidéos, des GIFs animés, lâche-toi !!</string>
     <string name="editTextMessageContentHintText">Message</string>
-    <string name="editTextNameHint">Choisis le nom de ton message</string>
+    <string name="editTextNameHint">Choisis le nom de ton événement</string>
     <string name="buttonCreateEventText">Ajouter cet événement</string>
 
     <string-array name="daysOfWeekArray">
@@ -59,7 +59,7 @@
     <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
 
     <string name="logging_success">Connexion réussie</string>
-  
+
     <string name="tutorialTitle">Tutoriel</string>
     <string name="buttonTutorialText">Tutoriel</string>
     <string name="comprisButton">Compris !</string>
@@ -74,6 +74,7 @@ ou tu peux en ajouter en cliquant sur le bouton correspondant.</item>
         <item>N\'hésite pas à être inventif dans tes messages, tu peux y mettre des liens vers du contenu (GIFs, Vidéos, Sites etc), il sera affiché comme si tu l\'avais toi
 même entré directement sur le chat.</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 
 
 </resources>
