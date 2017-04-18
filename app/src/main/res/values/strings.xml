@@ -57,5 +57,19 @@
     <string name="checkBpxSignature">Ajouter à mon message la signature de l\'application</string>
     <string name="ValidateButton">Valider</string>
     <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
+    <string name="tutorialTitle">Tutoriel</string>
+    <string name="buttonTutorialText">Tutoriel</string>
+    <string name="comprisButton">Compris !</string>
+
+    <string-array name="tutorialArray">
+        <item>Cet application te permet de créer des messages qui seront envoyés sur le chat Mattermost de ton choix, aux jours et heures que tu auras configuré.</item>
+        <item>Il te faudra posséder un compte Mattermost et te connecter dessus pour utiliser cette application. Une fois connecté, tu peux passer à la suite.</item>
+        <item>Rend toi dans "Gérer Mes Evénements" pour gérer tes messages. Tu peux cliquer sur ceux présents dans la liste pour les modifier ou les supprimer
+ou tu peux en ajouter en cliquant sur le bouton correspondant.</item>
+        <item>Pour te connecter ou te déconnecter de ton compte Mattermost, tu dois te rendre dans "Mon profil".</item>
+        <item>Le gros bouton on/off sur la page d\'accueuil te permet de désactiver ou d\'activer l\'envoi automatique de tous tes messages en un seul clic.</item>
+        <item>N\'hésite pas à être inventif dans tes messages, tu peux y mettre des liens vers du contenu (GIFs, Vidéos, Sites etc), il sera affiché comme si tu l\'avais toi
+même entré directement sur le chat.</item>
+    </string-array>
 
 </resources>
