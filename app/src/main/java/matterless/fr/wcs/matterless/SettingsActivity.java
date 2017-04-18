@@ -1,12 +1,9 @@
 package matterless.fr.wcs.matterless;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.*;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +21,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.regex.Pattern;
 
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+
+
+    public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
+    public final String TAG = "SettingsActivity";
+    public final String FILE_NAME = "FILE_NAME";
 
     private TextView textViewUserName;
     private UsersLogin usersLogin;
@@ -47,8 +47,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private String authToken;
     private FileOutputStream mfileOutputStream;
     private FileInputStream mfileInputStream;
-    public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
-    public final String FILE_NAME = "FILE_NAME";
+
     private ImageView imageViewProfilePicture;
 
     @Override
@@ -66,7 +65,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             buttonTutorial.setOnClickListener(this);
             buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
-
 
         try {
             mfileInputStream = openFileInput(FILE_NAME);
@@ -86,15 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         if(muserCredentials != null){
 
-            textViewEmail.setVisibility(View.GONE);
-            textViewPassword.setVisibility(View.GONE);
-            editTextEmail.setVisibility(View.GONE);
-            editTextPassword.setVisibility(View.GONE);
-            textViewUserName.setVisibility(View.VISIBLE);
-            imageViewProfilePicture.setVisibility(View.VISIBLE);
-            buttonlog.setText(R.string.buttonLogOutText);
-
-            textViewUserName.setText(muserCredentials.getUserName());
+            setProfileVisible();
 
             MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
             Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + muserCredentials.getToken(), muserCredentials.getImageUrl());
@@ -103,22 +93,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> responseImageUrl) {
                     if (responseImageUrl.isSuccessful()) {
 
-                        textViewUserName.setText(muserCredentials.getUserName());
-
                         boolean writtenToDisk = writeResponseBodyToDisk(responseImageUrl.body());
                         if(writtenToDisk) {
                             File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                             imageViewProfilePicture.setImageBitmap(myBitmap);
-                            Toast.makeText(SettingsActivity.this, "image enregistré avec un le token du intenral storage", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(SettingsActivity.this, "ta ton image", Toast.LENGTH_SHORT).show();
-
 
 
                     } else {
                         SettingsActivity.this.deleteFile(FILE_NAME);
                         usersLogin = new UsersLogin(muserCredentials.getEmail(), muserCredentials.getPassword());
+
                         MattermostService mattermostService =
                                 ServiceGenerator.RETROFIT.create(MattermostService.class);
                         Call<Void> callLogin = mattermostService.basicLogin(usersLogin);
@@ -139,13 +126,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                                             if (responseUser.isSuccessful()) {
                                                 // usersLogin object available
-                                                textViewEmail.setVisibility(View.GONE);
-                                                textViewPassword.setVisibility(View.GONE);
-                                                editTextEmail.setVisibility(View.GONE);
-                                                editTextPassword.setVisibility(View.GONE);
-                                                textViewUserName.setVisibility(View.VISIBLE);
-                                                imageViewProfilePicture.setVisibility(View.VISIBLE);
-                                                buttonlog.setText(R.string.buttonLogOutText);
+                                                setProfileVisible();
 
                                                 userProfile = responseUser.body();
                                                 String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
@@ -180,58 +161,43 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> responseImageUrl) {
                                                         if (responseImageUrl.isSuccessful()) {
 
-                                                            textViewUserName.setText(userProfile.getUsername());
-
                                                             boolean writtenToDisk = writeResponseBodyToDisk(responseImageUrl.body());
                                                             if(writtenToDisk) {
                                                                 File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                                                                 Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                                                                 imageViewProfilePicture.setImageBitmap(myBitmap);
-                                                                Toast.makeText(SettingsActivity.this, "image enregistré", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
                                                             }
-                                                            Toast.makeText(SettingsActivity.this, "ta ton image", Toast.LENGTH_SHORT).show();
-
-
-
-                                                        } else {
-                                                            Toast.makeText(SettingsActivity.this, "Foireux", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
 
                                                     @Override
                                                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                                                        Log.e(TAG, t.getMessage());
                                                     }
                                                 });
 
-                                                Toast.makeText(SettingsActivity.this, "successfull", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 // error response, no access to resource?
-                                                Toast.makeText(SettingsActivity.this, "error", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(Call<UserProfile> call, Throwable t) {
-                                            Toast.makeText(SettingsActivity.this, "failure", Toast.LENGTH_SHORT).show();
-
+                                            Log.e(TAG, t.getMessage());
                                         }
                                     });
 
 
 
 
-                                } else {
-                                    // error response, no access to resource?
-                                    Toast.makeText(SettingsActivity.this, "pk c'est là", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
                                 // something went completely south (like no internet connection)
-                                Toast.makeText(SettingsActivity.this, "doesn't work", Toast.LENGTH_SHORT).show();
-                                Log.d("Error", t.getMessage());
+                                Log.e(TAG, t.getMessage());
                             }
                         });
 
@@ -240,7 +206,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                    Log.e(TAG, t.getMessage());
                 }
             });
         }
@@ -274,13 +240,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                                         if (responseUser.isSuccessful()) {
                                             // usersLogin object available
-                                            textViewEmail.setVisibility(View.GONE);
-                                            textViewPassword.setVisibility(View.GONE);
-                                            editTextEmail.setVisibility(View.GONE);
-                                            editTextPassword.setVisibility(View.GONE);
-                                            textViewUserName.setVisibility(View.VISIBLE);
-                                            imageViewProfilePicture.setVisibility(View.VISIBLE);
-                                            buttonlog.setText(R.string.buttonLogOutText);
+                                            setProfileVisible();
 
                                             userProfile = responseUser.body();
                                             String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
@@ -319,58 +279,43 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> responseImageUrl) {
                                                     if (responseImageUrl.isSuccessful()) {
 
-                                                        textViewUserName.setText(userProfile.getUsername());
-
                                                         boolean writtenToDisk = writeResponseBodyToDisk(responseImageUrl.body());
                                                         if(writtenToDisk) {
                                                             File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                                                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                                                             imageViewProfilePicture.setImageBitmap(myBitmap);
-                                                            Toast.makeText(SettingsActivity.this, "image enregistré", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
                                                         }
-                                                        Toast.makeText(SettingsActivity.this, "ta ton image", Toast.LENGTH_SHORT).show();
 
 
-
-                                                    } else {
-                                                        Toast.makeText(SettingsActivity.this, "Foireux", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
 
                                                 @Override
                                                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                                                    Log.e(TAG, t.getMessage());
                                                 }
                                             });
 
-                                            Toast.makeText(SettingsActivity.this, "successfull", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            // error response, no access to resource?
-                                            Toast.makeText(SettingsActivity.this, "error", Toast.LENGTH_SHORT).show();
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<UserProfile> call, Throwable t) {
-                                        Toast.makeText(SettingsActivity.this, "failure", Toast.LENGTH_SHORT).show();
-
+                                        Log.e(TAG, t.getMessage());
                                     }
                                 });
 
 
 
 
-                            } else {
-                                // error response, no access to resource?
-                                Toast.makeText(SettingsActivity.this, "pk c'est là", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
                             // something went completely south (like no internet connection)
-                            Toast.makeText(SettingsActivity.this, "doesn't work", Toast.LENGTH_SHORT).show();
-                            Log.d("Error", t.getMessage());
+                            Log.d(TAG, t.getMessage());
                         }
                     });
                 }
@@ -445,5 +390,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         } catch (IOException e) {
             return false;
         }
+    }
+
+    private void setProfileVisible(){
+
+        textViewEmail.setVisibility(View.GONE);
+        textViewPassword.setVisibility(View.GONE);
+        editTextEmail.setVisibility(View.GONE);
+        editTextPassword.setVisibility(View.GONE);
+        textViewUserName.setVisibility(View.VISIBLE);
+        imageViewProfilePicture.setVisibility(View.VISIBLE);
+        buttonlog.setText(R.string.buttonLogOutText);
+
+        textViewUserName.setText(muserCredentials.getUserName());
     }
 }

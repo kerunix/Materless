@@ -14,5 +14,4 @@ public class UsersLogin {
         this.email = email;
         this.password = password;
     }
-
 }

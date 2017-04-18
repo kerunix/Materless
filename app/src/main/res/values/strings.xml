@@ -57,6 +57,9 @@
     <string name="checkBpxSignature">Ajouter à mon message la signature de l\'application</string>
     <string name="ValidateButton">Valider</string>
     <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
+
+    <string name="logging_success">Connexion réussie</string>
+  
     <string name="tutorialTitle">Tutoriel</string>
     <string name="buttonTutorialText">Tutoriel</string>
     <string name="comprisButton">Compris !</string>
@@ -71,5 +74,6 @@ ou tu peux en ajouter en cliquant sur le bouton correspondant.</item>
         <item>N\'hésite pas à être inventif dans tes messages, tu peux y mettre des liens vers du contenu (GIFs, Vidéos, Sites etc), il sera affiché comme si tu l\'avais toi
 même entré directement sur le chat.</item>
     </string-array>
+
 
 </resources>

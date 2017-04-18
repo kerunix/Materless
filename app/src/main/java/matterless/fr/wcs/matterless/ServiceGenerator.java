@@ -47,4 +47,6 @@ public class ServiceGenerator {
 
         return RETROFIT.create(serviceClass);
     }*/
+
+    
 }
