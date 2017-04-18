@@ -99,7 +99,7 @@ public class MessageListActivity extends AppCompatActivity {
         buttonAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
+                Intent intentToMessageSetting = new Intent(MessageListActivity.this, MapsActivity.class);
                 startActivity(intentToMessageSetting);
             }
         });
