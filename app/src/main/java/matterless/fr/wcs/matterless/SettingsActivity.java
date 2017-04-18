@@ -339,6 +339,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 Intent intent = new Intent(SettingsActivity.this, TutorialActivity.class);
                 startActivity(intent);
+                finish();
         }
 
     }
