@@ -43,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonlog;
+    private Button buttonTutorial;
     private String authToken;
     private FileOutputStream mfileOutputStream;
     private FileInputStream mfileInputStream;
@@ -61,7 +62,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonlog = (Button) findViewById(R.id.buttonLog);
-        buttonlog.setOnClickListener(this);
+        buttonTutorial= (Button) findViewById(R.id.buttonTutorial);
+            buttonTutorial.setOnClickListener(this);
+            buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
 
 
@@ -386,6 +389,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     muserCredentials = null;
                     SettingsActivity.this.deleteFile(FILE_NAME);
                 }
+
+            case R.id.buttonTutorial :
+
+                Intent intent = new Intent(SettingsActivity.this, TutorialActivity.class);
+                startActivity(intent);
         }
 
     }
