@@ -57,5 +57,6 @@
     <string name="checkBpxSignature">Ajouter à mon message la signature de l\'application</string>
     <string name="ValidateButton">Valider</string>
     <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
+    <string name="logging_success">Connexion réussie</string>
 
 </resources>
