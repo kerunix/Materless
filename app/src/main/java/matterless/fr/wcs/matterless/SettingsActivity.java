@@ -334,12 +334,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     muserCredentials = null;
                     SettingsActivity.this.deleteFile(FILE_NAME);
                 }
+                break;
 
             case R.id.buttonTutorial :
 
                 Intent intent = new Intent(SettingsActivity.this, TutorialActivity.class);
                 startActivity(intent);
                 finish();
+                break;
         }
 
     }
