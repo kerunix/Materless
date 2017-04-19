@@ -29,13 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,8 +42,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
 
     public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = "[MaterlessBot] ";   // signature du bot, à ajouter
-                                                                    // si choisi par le user
+    public static final String BOT_SIGNATURE = "#Matterless ";   // signature du bot, à ajouter
+                                                                 // si choisi par le user
 
     private Intent intent;
     private String ref;
@@ -56,8 +52,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     private Button buttonSelectDay;
     private Button buttonCreateEvent;
     private Button buttonChoseChannel;
-
-    private CheckBox checkBoxSignature;
 
     private EditText mEditTextMessageName;
     private EditText mEditTextMessageContent;
@@ -84,8 +78,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
         intent = getIntent();
         ref = intent.getStringExtra("ref");
-
-        checkBoxSignature = (CheckBox) findViewById(R.id.checkBoxSignature);
 
         buttonTimePicker = (Button) findViewById(R.id.buttonTimePicker);
         buttonSelectDay = (Button) findViewById(R.id.buttonSelectDay);
@@ -310,13 +302,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             public void onClick(View v) {
 
 
-                String finalContent = mEditTextMessageContent.getText().toString();
-
-                if (checkBoxSignature.isChecked()) {
-
-
-                    finalContent = BOT_SIGNATURE + finalContent;
-                }
+                String finalContent = mEditTextMessageContent.getText().toString() + BOT_SIGNATURE;
 
                 if (mFutureMessage.getDaysEnabled().length() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
 

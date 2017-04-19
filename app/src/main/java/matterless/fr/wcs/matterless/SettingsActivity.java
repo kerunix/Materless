@@ -98,7 +98,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                             imageViewProfilePicture.setImageBitmap(myBitmap);
-                            Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -116,7 +115,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 if (response.isSuccessful()) {
                                     // usersLogin object available
                                     authToken = response.headers().get("Token");
-                                    Toast.makeText(SettingsActivity.this, "ok!", Toast.LENGTH_SHORT).show();
                                     MattermostService getUserProfile =
                                             ServiceGenerator.RETROFIT.create(MattermostService.class);
                                     Call<UserProfile> callUserProfile = getUserProfile.getUser("Bearer " + authToken);
@@ -166,7 +164,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                                 File imageFile = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profilePicture.png")));
                                                                 Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                                                                 imageViewProfilePicture.setImageBitmap(myBitmap);
-                                                                Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     }
@@ -230,7 +227,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                             if (response.isSuccessful()) {
                                 // usersLogin object available
                                 authToken = response.headers().get("Token");
-                                Toast.makeText(SettingsActivity.this, "ok!", Toast.LENGTH_SHORT).show();
                                 MattermostService getUserProfile =
                                         ServiceGenerator.RETROFIT.create(MattermostService.class);
                                 Call<UserProfile> callUserProfile = getUserProfile.getUser("Bearer " + authToken);
@@ -322,7 +318,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 else if (authToken != null || muserCredentials != null){
 
-                    textViewEmail.setVisibility(View.VISIBLE);
                     textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
                     editTextEmail.setText(null);
@@ -334,12 +329,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     muserCredentials = null;
                     SettingsActivity.this.deleteFile(FILE_NAME);
                 }
+                break;
 
             case R.id.buttonTutorial :
 
                 Intent intent = new Intent(SettingsActivity.this, TutorialActivity.class);
                 startActivity(intent);
                 finish();
+                break;
         }
 
     }
