@@ -4,6 +4,8 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +19,7 @@ class Message implements Parcelable {
     private String mChannelName;
     private String mMessageContent;
     private ArrayList<Day> mDays;
-    private Location mLocation;
+    private LatLng mLatLng;
 
 
     public Message(){}
@@ -41,46 +43,6 @@ class Message implements Parcelable {
         mChannelName = channelName;
 
     }*/
-
-    protected Message(Parcel in) {
-        mName = in.readString();
-        mTimeMinute = in.readInt();
-        mTimeHour = in.readInt();
-        mChannelId = in.readString();
-        mChannelName = in.readString();
-        mMessageContent = in.readString();
-        mDays = in.createTypedArrayList(Day.CREATOR);
-        Location.CREATOR.createFromParcel(in);
-    }
-
-    public static final Creator<Message> CREATOR = new Creator<Message>() {
-        @Override
-        public Message createFromParcel(Parcel in) {
-            return new Message(in);
-        }
-
-        @Override
-        public Message[] newArray(int size) {
-            return new Message[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mName);
-        dest.writeInt(mTimeMinute);
-        dest.writeInt(mTimeHour);
-        dest.writeString(mChannelId);
-        dest.writeString(mChannelName);
-        dest.writeString(mMessageContent);
-        dest.writeTypedList(mDays);
-        mLocation.writeToParcel(dest, flags);
-    }
 
     public String getmName() {
         return mName;
@@ -130,14 +92,6 @@ class Message implements Parcelable {
         this.mMessageContent = mMessageContent;
     }
 
-    public Location getmLocation(){
-        return mLocation;
-    }
-
-    public void setmLocation(Location mLocation){
-        this.mLocation = mLocation;
-    }
-
     public ArrayList<Day> getmDays() {
         return mDays;
     }
@@ -146,8 +100,43 @@ class Message implements Parcelable {
         this.mDays = mDays;
     }
 
+    public LatLng getmLatLng() {
+        return mLatLng;
+    }
+
+    public void setmLatLng(LatLng mLatLng) {
+        this.mLatLng = mLatLng;
+    }
+
+    public static Creator<Message> getCREATOR() {
+        return CREATOR;
+    }
+
 
     //methodes
+
+    protected Message(Parcel in) {
+        mName = in.readString();
+        mTimeMinute = in.readInt();
+        mTimeHour = in.readInt();
+        mChannelId = in.readString();
+        mChannelName = in.readString();
+        mMessageContent = in.readString();
+        mDays = in.createTypedArrayList(Day.CREATOR);
+        mLatLng = in.readParcelable(LatLng.class.getClassLoader());
+    }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
     public String getDaysEnabled(){
 
@@ -180,5 +169,22 @@ class Message implements Parcelable {
             daysDisplay = strArray.get(0);
         }
         return daysDisplay;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mName);
+        dest.writeInt(mTimeMinute);
+        dest.writeInt(mTimeHour);
+        dest.writeString(mChannelId);
+        dest.writeString(mChannelName);
+        dest.writeString(mMessageContent);
+        dest.writeTypedList(mDays);
+        dest.writeParcelable(mLatLng, flags);
     }
 }
