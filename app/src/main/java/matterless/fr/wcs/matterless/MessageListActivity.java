@@ -74,7 +74,7 @@ public class MessageListActivity extends AppCompatActivity {
                 Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
                 Message message = (Message) mAdapter.getItem(position);
 
-                String ref = mAdapter.getmKey(position);
+                String ref = mAdapter.getmKey(position); //ref de l'item dans la database
                 intent.putExtra("message", message); //instance de message
                 intent.putExtra("ref", ref); //position dans la liste
 
