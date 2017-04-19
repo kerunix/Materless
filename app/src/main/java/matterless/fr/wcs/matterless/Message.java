@@ -20,7 +20,7 @@ class Message implements Parcelable {
     private Location mLocation;
 
 
-    private Message(){}
+    public Message(){}
 
     public Message(String[] str){
         mDays = new ArrayList<>();
