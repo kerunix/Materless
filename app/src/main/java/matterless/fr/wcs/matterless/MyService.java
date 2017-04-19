@@ -44,6 +44,7 @@ public class MyService extends Service {
 
 
     private AlarmManager alarmManager;
+    private ArrayList<Message> mLocationMessage;
 
 
     public MyService() {
@@ -54,6 +55,7 @@ public class MyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        mLocationMessage = new ArrayList<>();
 
         try {
             mfileInputStream = openFileInput(FILE_NAME);
@@ -75,19 +77,46 @@ public class MyService extends Service {
 
         if (intent != null){
             if(intent.getAction().equals(INTENT_START_BOT)){
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child: dataSnapshot.getChildren()){
+                            if (child.getValue(Message.class).getmLatLng() != null) {
+                                mLocationMessage.add(child.getValue(Message.class));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 Log.e(TAG,"bot Started");
                 databaseReference.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        cancelAlarm(dataSnapshot);
-                        sendAlarm(dataSnapshot);
+                        if (dataSnapshot.getValue(Message.class).getmLatLng() != null){
+                            //TODO
+                        }else {
+                            cancelAlarm(dataSnapshot);
+                            sendAlarm(dataSnapshot);
+                            Log.e(TAG, "data changed");
+
+                        }
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        cancelAlarm(dataSnapshot);
-                        sendAlarm(dataSnapshot);
-                        Log.e(TAG, "data changed");
+                        if (dataSnapshot.getValue(Message.class).getmLatLng() != null){
+                            //TODO
+                        }else {
+                            cancelAlarm(dataSnapshot);
+                            sendAlarm(dataSnapshot);
+                            Log.e(TAG, "data changed");
+                        }
 
                     }
 
