@@ -115,21 +115,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp="";
-            while( (c = mfileInputStream.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        UserCredentials.fromFile(this, FILE_NAME);
     }
 
     @Override

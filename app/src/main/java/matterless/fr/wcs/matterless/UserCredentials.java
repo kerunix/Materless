@@ -1,5 +1,11 @@
 package matterless.fr.wcs.matterless;
 
+import android.content.Context;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * Created by apprenti on 30/03/17.
  */
@@ -37,6 +43,30 @@ public class UserCredentials {
 
     public String oneString(){
         return this.userID+ "|"+this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
+    }
+
+    public static UserCredentials fromFile(Context context, String fileName) {
+
+        UserCredentials userCredentials = null;
+        FileInputStream fileInputStream = null;
+
+        try {
+            fileInputStream = context.openFileInput(fileName);
+            int c;
+            StringBuilder sb = new StringBuilder();
+            while ((c = fileInputStream.read()) != -1) {
+                sb.append(Character.toString((char) c));
+            }
+            String[] arr = sb.toString().split("\\|");
+            userCredentials = new UserCredentials(arr);
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return userCredentials;
     }
 
 
