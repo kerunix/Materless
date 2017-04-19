@@ -20,10 +20,10 @@
         app:layout_constraintTop_toTopOf="parent"
 
         android:layout_marginTop="8dp"
-        app:layout_constraintHorizontal_bias="0.501"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/textViewUserName"
-        app:layout_constraintVertical_bias="0.635" />
+        app:layout_constraintVertical_bias="0.661"
+        android:layout_marginRight="129dp" />
 
     <TextView
         android:id="@+id/textViewUserName"
