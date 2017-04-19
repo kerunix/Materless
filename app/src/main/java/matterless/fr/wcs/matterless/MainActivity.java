@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         botLaunched = true;
 
-        UserCredentials.fromFile(this, FILE_NAME);
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
 
         if(muserCredentials == null){
             Intent intentToSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);

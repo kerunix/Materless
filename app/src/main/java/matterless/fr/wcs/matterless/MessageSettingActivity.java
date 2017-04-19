@@ -333,7 +333,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     protected void onStart() {
         super.onStart();
 
-        UserCredentials.fromFile(this, FILE_NAME);
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(MessageSettingActivity.this, FILE_NAME);
 
         mRef = database.getReference("Messages/" + muserCredentials.getUserID());
 

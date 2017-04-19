@@ -115,7 +115,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        UserCredentials.fromFile(this, FILE_NAME);
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(MessageDetailsActivity.this, FILE_NAME);
     }
 
     @Override

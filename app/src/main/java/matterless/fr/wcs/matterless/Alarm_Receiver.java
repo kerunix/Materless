@@ -40,7 +40,8 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
             Log.e("Ca marche !", "BORDEL !!!");
 
-            UserCredentials.fromFile(context, FILE_NAME);
+            muserCredentials = new UserCredentials();
+            muserCredentials = UserCredentials.fromFile(context, FILE_NAME);
 
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

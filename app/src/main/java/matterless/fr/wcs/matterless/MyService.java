@@ -55,7 +55,8 @@ public class MyService extends Service {
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        UserCredentials.fromFile(this, FILE_NAME);
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
 

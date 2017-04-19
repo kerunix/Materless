@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -18,6 +19,7 @@ public class UserCredentials {
     private String imageUrl;
     private String userName;
     private String userID;
+    private static FileOutputStream fileOutputStream;
 
     public UserCredentials(String userID, String email, String password, String token, String imageUrl, String userName){
 
@@ -41,6 +43,8 @@ public class UserCredentials {
 
     }
 
+    public UserCredentials(){}
+
     public String oneString(){
         return this.userID+ "|"+this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
     }
@@ -48,7 +52,7 @@ public class UserCredentials {
     public static UserCredentials fromFile(Context context, String fileName) {
 
         UserCredentials userCredentials = null;
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
 
         try {
             fileInputStream = context.openFileInput(fileName);
@@ -67,6 +71,26 @@ public class UserCredentials {
         }
 
         return userCredentials;
+    }
+
+    public static void toFile(Context context, String fileName, UserCredentials userCredentials) {
+
+
+        try {
+            fileOutputStream = context.openFileOutput(fileName, context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.write(userCredentials.oneString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
