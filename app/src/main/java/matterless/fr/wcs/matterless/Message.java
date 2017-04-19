@@ -1,5 +1,6 @@
 package matterless.fr.wcs.matterless;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,6 +17,7 @@ class Message implements Parcelable {
     private String mChannelName;
     private String mMessageContent;
     private ArrayList<Day> mDays;
+    private Location mLocation;
 
 
     private Message(){}
@@ -48,6 +50,7 @@ class Message implements Parcelable {
         mChannelName = in.readString();
         mMessageContent = in.readString();
         mDays = in.createTypedArrayList(Day.CREATOR);
+        Location.CREATOR.createFromParcel(in);
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -76,6 +79,7 @@ class Message implements Parcelable {
         dest.writeString(mChannelName);
         dest.writeString(mMessageContent);
         dest.writeTypedList(mDays);
+        mLocation.writeToParcel(dest, flags);
     }
 
     public String getmName() {
@@ -124,6 +128,14 @@ class Message implements Parcelable {
 
     public void setmMessageContent(String mMessageContent) {
         this.mMessageContent = mMessageContent;
+    }
+
+    public Location getmLocation(){
+        return mLocation;
+    }
+
+    public void setmLocation(Location mLocation){
+        this.mLocation = mLocation;
     }
 
     public ArrayList<Day> getmDays() {
