@@ -15,7 +15,7 @@
 
     <!-- MessageSettingsActivity -->
 
-    <string name="textViewMyEventsSettingsText">Créé ton événement</string>
+    <string name="textViewMyEventsSettingsText">Créér ton événement</string>
     <string name="textViewMesageContentDescriptionText">Entre le message que tu souhaites ci dessous, tu peux ajouter des liens vers des images, des vidéos, des GIFs animés, lâche-toi !!</string>
     <string name="editTextMessageContentHintText">Message</string>
     <string name="editTextNameHint">Choisis le nom de ton événement</string>
