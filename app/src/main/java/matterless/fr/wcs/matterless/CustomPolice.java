@@ -6,9 +6,15 @@ import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.LruCache;
+import android.widget.Button;
 
 
-public class CustomPolice extends AppCompatTextView {
+public class CustomPolice extends Button {
+
+    //créé un cache de Typeface, pouvant contenir 12 fonts
+    private static LruCache<String, Typeface> TYPEFACE_CACHE = new LruCache<String, Typeface>(12);
+
     public CustomPolice(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -33,11 +39,23 @@ public class CustomPolice extends AppCompatTextView {
     public void setTypeFace(String fontName) {
         if(fontName != null){
             try {
-                Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/" + fontName);
+                //on regarde dans le cache si cette police est présente
+                Typeface typeface = TYPEFACE_CACHE.get(fontName);
+
+                //si non, on la charge à partir des assets
+                if (typeface == null) {
+                    typeface = Typeface.createFromAsset(getContext().getAssets(),"fonts/" + fontName);
+
+                    //puis on la sauvegarde dans notre cache
+                    TYPEFACE_CACHE.put(fontName, typeface);
+                }
+
+                //puis on l'utilise sur notre TextView
                 setTypeface(typeface);
             } catch (Exception e) {
                 Log.e("FONT", fontName + " not found", e);
             }
         }
     }
+
 }
