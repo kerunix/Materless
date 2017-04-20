@@ -23,9 +23,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
 
     public static final String TAG = "Alarm_Receiver";
-    public final String FILE_NAME = "FILE_NAME";
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -40,22 +38,8 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
             Log.e("Ca marche !", "BORDEL !!!");
 
-            try {
-                mfileInputStream = context.openFileInput(FILE_NAME);
-                int c;
-                String temp = "";
-                while ((c = mfileInputStream.read()) != -1) {
-                    temp = temp + Character.toString((char) c);
-                }
-                String[] arr = temp.split("\\|");
-                muserCredentials = new UserCredentials(arr);
-                mfileInputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            muserCredentials = new UserCredentials();
+            muserCredentials = UserCredentials.fromFile(context);
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification noti = new Notification.Builder(context)

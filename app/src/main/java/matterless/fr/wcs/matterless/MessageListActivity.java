@@ -20,7 +20,6 @@ import java.util.List;
 public class MessageListActivity extends AppCompatActivity {
 
 
-    public final String FILE_NAME = "FILE_NAME";
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
@@ -49,21 +48,8 @@ public class MessageListActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp="";
-            while( (c = mfileInputStream.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(MessageListActivity.this);
 
         mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
 
