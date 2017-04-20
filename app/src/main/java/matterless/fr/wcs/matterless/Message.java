@@ -22,7 +22,7 @@ class Message implements Parcelable {
     private LatLng mLatLng;
 
 
-    private Message(){}
+    public Message(){}
 
     public Message(String[] str){
         mDays = new ArrayList<>();

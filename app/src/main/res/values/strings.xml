@@ -34,6 +34,10 @@
     <string name="buttonTimePickerText">Heure</string>
     <string name="buttonSelectDayText">Jours</string>
 
+    <!-- MessageSettingsActivity(Geoloc) -->
+    
+    <string name="Geolocalisation">Choisir/Modifier sa géolocalisation</string>
+
     <!-- SettingsActivity -->
 
     <string name="textViewUserNameText">Username</string>
