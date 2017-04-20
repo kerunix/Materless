@@ -40,21 +40,8 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
             Log.e(TAG, "reached the alarm receiver");
 
-            try {
-                mfileInputStream = context.openFileInput(FILE_NAME);
-                int c;
-                String temp = "";
-                while ((c = mfileInputStream.read()) != -1) {
-                    temp = temp + Character.toString((char) c);
-                }
-                String[] arr = temp.split("\\|");
-                muserCredentials = new UserCredentials(arr);
-                mfileInputStream.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            muserCredentials = new UserCredentials();
+            muserCredentials = UserCredentials.fromFile(context, FILE_NAME);
 
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

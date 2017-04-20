@@ -15,7 +15,7 @@
 
     <!-- MessageSettingsActivity -->
 
-    <string name="textViewMyEventsSettingsText">Créé ton événement</string>
+    <string name="textViewMyEventsSettingsText">Créér ton événement</string>
     <string name="textViewMesageContentDescriptionText">Entre le message que tu souhaites ci dessous, tu peux ajouter des liens vers des images, des vidéos, des GIFs animés, lâche-toi !!</string>
     <string name="editTextMessageContentHintText">Message</string>
     <string name="editTextNameHint">Choisis le nom de ton événement</string>
@@ -75,6 +75,8 @@ ou tu peux en ajouter en cliquant sur le bouton correspondant.</item>
 même entré directement sur le chat.</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="alertDialogMessageTypeTitle">Quel type de message veux-tu créer ?</string>
+    <string name="alertDialogMessageTypeContent">Tu peux créer un message dont l\'envoi sera basé sur ta position ou sur des critère d\'heure et de jours récurents</string>
 
 
 </resources>

@@ -54,7 +54,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String TAG = "MyService";
 
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
     private DatabaseReference databaseReference;
 
@@ -78,6 +77,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         mLocationMessage = new ArrayList<>();
 
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -86,21 +86,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                     .build();
         }
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp = "";
-            while ((c = mfileInputStream.read()) != -1) {
-                temp = temp + Character.toString((char) c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
+
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
 

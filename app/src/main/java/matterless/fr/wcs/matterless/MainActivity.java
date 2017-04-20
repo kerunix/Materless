@@ -50,21 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         botLaunched = true;
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp="";
-            while( (c = mfileInputStream.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
+
         if(muserCredentials == null){
             Intent intentToSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intentToSettingsActivity);
