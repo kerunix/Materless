@@ -38,7 +38,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
             String messageName = intent.getStringExtra(MyService.MESSAGE_NAME);
             String channelId = intent.getStringExtra(MyService.CHANNEL_ID);
 
-            Log.e("Ca marche !", "BORDEL !!!");
+            Log.e(TAG, "reached the alarm receiver");
 
             try {
                 mfileInputStream = context.openFileInput(FILE_NAME);

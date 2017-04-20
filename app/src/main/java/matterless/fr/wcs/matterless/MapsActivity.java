@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
-    private final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
+    public static final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
 
     private GoogleMap mMap;
     private LatLng mChoosenPositon;
