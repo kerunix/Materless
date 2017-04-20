@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private UserCredentials muserCredentials;
     private TextView textViewEmail;
     private TextView textViewPassword;
+    private TextView textViewTitle;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonlog;
@@ -64,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonTutorial.setOnClickListener(this);
         buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
+        textViewTitle = (TextView) findViewById(R.id.textViewConnectTitle);
 
         muserCredentials = new UserCredentials();
         muserCredentials = UserCredentials.fromFile(SettingsActivity.this);
@@ -275,6 +279,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 else if (authToken != null || muserCredentials != null){
 
+                    textViewTitle.setVisibility(View.VISIBLE);
+                    textViewEmail.setVisibility(View.VISIBLE);
                     textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
                     editTextEmail.setText(null);
@@ -349,6 +355,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setProfileVisible(){
 
+        textViewTitle.setVisibility(View.GONE);
         textViewEmail.setVisibility(View.GONE);
         textViewPassword.setVisibility(View.GONE);
         editTextEmail.setVisibility(View.GONE);
