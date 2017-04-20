@@ -70,9 +70,9 @@ public class MessageListActivity extends AppCompatActivity {
                 Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
                 Message message = (Message) mAdapter.getItem(position);
 
-                String ref = mAdapter.getmKey(position);
+                String ref = mAdapter.getmKey(position);  //ID de l'item dans Firebase
                 intent.putExtra("message", message); //instance de message
-                intent.putExtra("ref", ref); //position dans la liste
+                intent.putExtra("ref", ref);
 
                 startActivity(intent);
             }
