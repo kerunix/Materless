@@ -17,8 +17,7 @@ class Message implements Parcelable {
     private String mMessageContent;
     private ArrayList<Day> mDays;
 
-
-    private Message(){}
+    public Message(){}
 
     public Message(String[] str){
         mDays = new ArrayList<>();
@@ -27,18 +26,6 @@ class Message implements Parcelable {
 
         }
     }
-
-    /*public Message (String name, ArrayList<Day> days, int timeMinute, int timeHour, String messageContent, String channelId, String channelName) {
-
-        mName = name;
-        mDays = days;
-        mTimeMinute = timeMinute;
-        mTimeHour = timeHour;
-        mMessageContent = messageContent;
-        mChannelId = channelId;
-        mChannelName = channelName;
-
-    }*/
 
     protected Message(Parcel in) {
         mName = in.readString();

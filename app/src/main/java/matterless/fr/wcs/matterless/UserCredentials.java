@@ -1,5 +1,12 @@
 package matterless.fr.wcs.matterless;
 
+import android.content.Context;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * Created by apprenti on 30/03/17.
  */
@@ -12,6 +19,9 @@ public class UserCredentials {
     private String imageUrl;
     private String userName;
     private String userID;
+    private static FileOutputStream fileOutputStream;
+
+    public UserCredentials(){}
 
     public UserCredentials(String userID, String email, String password, String token, String imageUrl, String userName){
 
@@ -37,6 +47,50 @@ public class UserCredentials {
 
     public String oneString(){
         return this.userID+ "|"+this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
+    }
+
+    public static UserCredentials fromFile(Context context) {
+
+        UserCredentials userCredentials = null;
+        FileInputStream fileInputStream;
+
+        try {
+            fileInputStream = context.openFileInput(MainActivity.FILE_NAME);
+            int c;
+            StringBuilder sb = new StringBuilder();
+            while ((c = fileInputStream.read()) != -1) {
+                sb.append(Character.toString((char) c));
+            }
+            String[] arr = sb.toString().split("\\|");
+            userCredentials = new UserCredentials(arr);
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return userCredentials;
+    }
+
+    public static void toFile(Context context, UserCredentials userCredentials) {
+
+
+        try {
+            fileOutputStream = context.openFileOutput(MainActivity.FILE_NAME, context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.write(userCredentials.oneString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

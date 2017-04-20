@@ -32,7 +32,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
     public final String TAG = "SettingsActivity";
-    public final String FILE_NAME = "FILE_NAME";
 
     private TextView textViewUserName;
     private UsersLogin usersLogin;
@@ -66,21 +65,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp="";
-            while( (c = mfileInputStream.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(SettingsActivity.this);
 
         if(muserCredentials != null){
 
@@ -102,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 
                     } else {
-                        SettingsActivity.this.deleteFile(FILE_NAME);
+                        SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                         usersLogin = new UsersLogin(muserCredentials.getEmail(), muserCredentials.getPassword());
 
                         MattermostService mattermostService =
@@ -135,22 +121,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                         imageUrl,
                                                         userProfile.getUsername());
 
-                                                try {
-                                                    mfileOutputStream = openFileOutput(FILE_NAME, SettingsActivity.this.MODE_PRIVATE);
-                                                } catch (FileNotFoundException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                try {
-                                                    mfileOutputStream.write(userCredentials.oneString().getBytes());
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                                try {
-                                                    mfileOutputStream.close();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-
+                                                UserCredentials.toFile(SettingsActivity.this, muserCredentials);
 
                                                 MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
                                                 Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + authToken, imageUrl);
@@ -246,21 +217,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                     imageUrl,
                                                     userProfile.getUsername());
 
-                                            try {
-                                                mfileOutputStream = openFileOutput(FILE_NAME, SettingsActivity.this.MODE_PRIVATE);
-                                            } catch (FileNotFoundException e) {
-                                                e.printStackTrace();
-                                            }
-                                            try {
-                                                mfileOutputStream.write(muserCredentials.oneString().getBytes());
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                            try {
-                                                mfileOutputStream.close();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                            UserCredentials.toFile(SettingsActivity.this, muserCredentials);
 
                                             Intent toService = new Intent(SettingsActivity.this, MyService.class);
                                             toService.setAction(MyService.INTENT_START_BOT);
@@ -327,7 +284,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     imageViewProfilePicture.setVisibility(View.INVISIBLE);
                     buttonlog.setText(R.string.buttonLogInText);
                     muserCredentials = null;
-                    SettingsActivity.this.deleteFile(FILE_NAME);
+                    SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                 }
                 break;
 

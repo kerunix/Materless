@@ -41,8 +41,7 @@ import retrofit2.Response;
 public class MessageSettingActivity extends AppCompatActivity /*implements View.OnClickListener*/ {
 
 
-    public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = "#Matterless ";   // signature du bot, à ajouter
+    public static final String BOT_SIGNATURE = " #Matterless";   // signature du bot, à ajouter
                                                                  // si choisi par le user
 
     private Intent intent;
@@ -333,21 +332,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     protected void onStart() {
         super.onStart();
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp = "";
-            while ((c = mfileInputStream.read()) != -1) {
-                temp = temp + Character.toString((char) c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(MessageSettingActivity.this);
 
         mRef = database.getReference("Messages/" + muserCredentials.getUserID());
 
