@@ -2,11 +2,15 @@ package matterless.fr.wcs.matterless;
 
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,9 +22,14 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     public static final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
+    public static final String LATLNG = "Latlng";
+    public static final String LAT = "Lat";
+    public static final String LNG = "lng";
+
 
     private GoogleMap mMap;
     private LatLng mChoosenPositon;
+    private FloatingActionButton mFloatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,22 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButtonGetLatLng);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mChoosenPositon != null) {
+                    SharedPreferences settings = getSharedPreferences(LATLNG, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putFloat(LAT, (float) mChoosenPositon.latitude);
+                    editor.putFloat(LNG, (float) mChoosenPositon.longitude);
+                    editor.commit();
+
+                    finish();
+                }
+            }
+        });
 
     }
 

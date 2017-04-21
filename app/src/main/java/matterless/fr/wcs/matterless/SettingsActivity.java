@@ -1,9 +1,12 @@
 package matterless.fr.wcs.matterless;
 
+import android.*;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
     public final String TAG = "SettingsActivity";
     public final String FILE_NAME = "FILE_NAME";
+    public static final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
 
     private TextView textViewUserName;
     private UsersLogin usersLogin;
@@ -45,8 +49,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Button buttonlog;
     private Button buttonTutorial;
     private String authToken;
-    private FileOutputStream mfileOutputStream;
-    private FileInputStream mfileInputStream;
 
     private ImageView imageViewProfilePicture;
 
@@ -54,6 +56,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(SettingsActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_TO_LOCATION);
+        }
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
         textViewEmail = (TextView) findViewById(R.id.textViewEmail);

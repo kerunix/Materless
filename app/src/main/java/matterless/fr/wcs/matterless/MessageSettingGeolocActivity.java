@@ -3,6 +3,7 @@ package matterless.fr.wcs.matterless;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,12 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +53,7 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference mRef;
 
-    private Location mLocation;
+    private LatLng mLatLng;
 
     private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
@@ -107,31 +111,34 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingGeolocActivity.this);
-                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getPublicChannel());
-                int checkboxId = 1;
-                if (intent.hasExtra("message")) {
+                if(mChannelRequest != null) {
 
-                    for (int i = 0; i < channelList.length; i++) {
+                    final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingGeolocActivity.this);
+                    final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getPublicChannel());
+                    int checkboxId = 1;
+                    if (intent.hasExtra("message")) {
 
-                        if (mFutureMessage.getmChannelName().equals(channelList[i])) {
-                            checkboxId = i;
+                        for (int i = 0; i < channelList.length; i++) {
+
+                            if (mFutureMessage.getmChannelName().equals(channelList[i])) {
+                                checkboxId = i;
+                            }
                         }
                     }
+
+
+                    channelDialog.setTitle(R.string.choseChannelButtonText);
+                    channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            mFutureMessage.setmChannelName(mChannelRequest.getPublicChannel().get(which).getDisplayName());
+                            mFutureMessage.setmChannelId(mChannelRequest.getPublicChannel().get(which).getId());
+                            buttonChoseChannel.setText(mFutureMessage.getmChannelName());
+                            dialog.dismiss();
+                        }
+                    }).show();
                 }
-
-
-                channelDialog.setTitle(R.string.choseChannelButtonText);
-                channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        mFutureMessage.setmChannelName(mChannelRequest.getPublicChannel().get(which).getDisplayName());
-                        mFutureMessage.setmChannelId(mChannelRequest.getPublicChannel().get(which).getId());
-                        buttonChoseChannel.setText(mFutureMessage.getmChannelName());
-                        dialog.dismiss();
-                    }
-                }).show();
             }
         });
 
@@ -179,7 +186,7 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
 
                 String finalContent = mEditTextMessageContent.getText().toString() + BOT_SIGNATURE;
 
-                if (mLocation.getLatitude() == 0 || mLocation.getLongitude() == 0 ||  mFutureMessage.getmChannelId().length() == 0|| mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
+                if (mLatLng.latitude == 0.0d ||  mFutureMessage.getmChannelId() == null|| mEditTextMessageName.getText().toString() == null || mEditTextMessageContent.getText().toString() == null) {
 
                     Toast.makeText(MessageSettingGeolocActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }
@@ -187,6 +194,9 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
                 else if(!intent.hasExtra("message")){
                     mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
                     mFutureMessage.setmMessageContent(finalContent.trim());
+                    mFutureMessage.setLat(mLatLng.latitude);
+                    mFutureMessage.setLng(mLatLng.longitude);
+                    mFutureMessage.setEventID(new Random().nextInt());
 
                     mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.push().setValue(mFutureMessage);
@@ -195,6 +205,9 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
                 else {
                     mFutureMessage.setmName(mEditTextMessageName.getText().toString().trim());
                     mFutureMessage.setmMessageContent(finalContent.trim());
+                    mFutureMessage.setLat(mLatLng.latitude);
+                    mFutureMessage.setLng(mLatLng.longitude);
+                    mFutureMessage.setEventID(new Random().nextInt());
 
                     mRef = database.getReference("Messages/" + muserCredentials.getUserID());
                     mRef.child(ref).setValue(mFutureMessage);
@@ -208,21 +221,8 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        try {
-            mfileInputStream = openFileInput(FILE_NAME);
-            int c;
-            String temp = "";
-            while ((c = mfileInputStream.read()) != -1) {
-                temp = temp + Character.toString((char) c);
-            }
-            String[] arr = temp.split("\\|");
-            muserCredentials = new UserCredentials(arr);
-            mfileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
 
         mRef = database.getReference("Messages/" + muserCredentials.getUserID());
 
@@ -240,6 +240,12 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
                 Log.e(MainActivity.TAG, t.toString());
             }
         });
+
+        SharedPreferences settings = getSharedPreferences(MapsActivity.LATLNG, 0);
+        mLatLng = new LatLng((double) settings.getFloat(MapsActivity.LAT, (float) 0), (double) settings.getFloat(MapsActivity.LNG, (float) -0));
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.apply();
     }
 
     @Override

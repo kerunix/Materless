@@ -42,8 +42,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
 
 
     public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = "#Matterless ";   // signature du bot, à ajouter
-                                                                 // si choisi par le user
+    public static final String BOT_SIGNATURE = " #Matterless ";
 
     private Intent intent;
     private String ref;
@@ -130,31 +129,34 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             @Override
             public void onClick(View v) {
 
-                final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
-                final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getPublicChannel());
-                int checkboxId = 1;
-                if (intent.hasExtra("message")) {
+                if(mChannelRequest != null) {
 
-                    for (int i = 0; i < channelList.length; i++) {
+                    final AlertDialog.Builder channelDialog = new AlertDialog.Builder(MessageSettingActivity.this);
+                    final String[] channelList = mChannelRequest.getChannelNames(mChannelRequest.getPublicChannel());
+                    int checkboxId = 1;
+                    if (intent.hasExtra("message")) {
 
-                        if (mFutureMessage.getmChannelName().equals(channelList[i])) {
-                            checkboxId = i;
+                        for (int i = 0; i < channelList.length; i++) {
+
+                            if (mFutureMessage.getmChannelName().equals(channelList[i])) {
+                                checkboxId = i;
+                            }
                         }
                     }
+
+
+                    channelDialog.setTitle(R.string.choseChannelButtonText);
+                    channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            mFutureMessage.setmChannelName(mChannelRequest.getPublicChannel().get(which).getDisplayName());
+                            mFutureMessage.setmChannelId(mChannelRequest.getPublicChannel().get(which).getId());
+                            buttonChoseChannel.setText(mFutureMessage.getmChannelName());
+                            dialog.dismiss();
+                        }
+                    }).show();
                 }
-
-
-                channelDialog.setTitle(R.string.choseChannelButtonText);
-                channelDialog.setSingleChoiceItems(channelList, checkboxId, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        mFutureMessage.setmChannelName(mChannelRequest.getPublicChannel().get(which).getDisplayName());
-                        mFutureMessage.setmChannelId(mChannelRequest.getPublicChannel().get(which).getId());
-                        buttonChoseChannel.setText(mFutureMessage.getmChannelName());
-                        dialog.dismiss();
-                    }
-                }).show();
             }
         });
 

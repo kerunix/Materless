@@ -1,6 +1,7 @@
 package matterless.fr.wcs.matterless;
 
 import android.*;
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -19,6 +20,8 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -47,6 +50,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     public static final String INTENT_START_BOT = "INTENT_START_BOT";
     public static final String INTENT_STOP_BOT = "INTENT_STOP_BOT";
+    public static final String LOCATION = "LOCATION";
     public final String FILE_NAME = "FILE_NAME";
     public static final String MESSAGE_NAME = "message_name";
     public static final String MESSAGE_CONTENT = "message_content";
@@ -58,11 +62,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private DatabaseReference databaseReference;
 
     private AlarmManager alarmManager;
-    private ArrayList<Message> mLocationMessage;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
+    private final static float RADIUS = 100f;
 
 
     public MyService() {
@@ -75,7 +79,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        mLocationMessage = new ArrayList<>();
 
 
         if (mGoogleApiClient == null) {
@@ -94,30 +97,14 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         databaseReference = FirebaseDatabase.getInstance().getReference("Messages/" + muserCredentials.getUserID());
 
         if (intent != null) {
-            if (intent.getAction().equals(INTENT_START_BOT)) {
+            if (intent.getAction().equals(INTENT_START_BOT) || intent.getAction().equals(intent.ACTION_BOOT_COMPLETED)) {
                 mGoogleApiClient.connect();
-
-                databaseReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            if (child.getValue(Message.class).getmLatLng() != null) {
-                                mLocationMessage.add(child.getValue(Message.class));
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
 
                 Log.e(TAG, "bot Started");
                 databaseReference.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue(Message.class).getmLatLng() != null) {
+                        if (dataSnapshot.getValue(Message.class).getLat() != null) {
                             //TODO
                         } else {
                             cancelAlarm(dataSnapshot);
@@ -129,7 +116,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        if (dataSnapshot.getValue(Message.class).getmLatLng() != null) {
+                        if (dataSnapshot.getValue(Message.class).getLat() != null) {
                             //TODO
                         } else {
                             cancelAlarm(dataSnapshot);
@@ -155,41 +142,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
                     }
                 });
-            } else if (intent.getAction().equals(intent.ACTION_BOOT_COMPLETED)) {
-                mGoogleApiClient.connect();
-                Log.e(TAG, "bot Started");
-                databaseReference.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        cancelAlarm(dataSnapshot);
-                        sendAlarm(dataSnapshot);
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        cancelAlarm(dataSnapshot);
-                        sendAlarm(dataSnapshot);
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        cancelAlarm(dataSnapshot);
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
             } else if (intent.getAction().equals(INTENT_STOP_BOT)) {
                 mGoogleApiClient.disconnect();
                 Log.e(TAG, "bot Stopped");
@@ -256,17 +208,18 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private void cancelAlarm(DataSnapshot dataSnapshot) {
         Message message = dataSnapshot.getValue(Message.class);
 
-        //String key = dataSnapshot.getKey();
-        for (int i = 0; i < message.getmDays().size(); i++) {
-            Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
-            //intentToAlarm_Receiver.putExtra(MESSAGE_KEY, key);
-            PendingIntent myPendingIntent = PendingIntent.getBroadcast(MyService.this,
-                    message.getmDays().get(i).getId(),
-                    intentToAlarm_Receiver,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.cancel(myPendingIntent);
+        if (message.getDaysEnabled() != "null") {
+
+            for (int i = 0; i < message.getmDays().size(); i++) {
+                Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
+                PendingIntent myPendingIntent = PendingIntent.getBroadcast(MyService.this,
+                        message.getmDays().get(i).getId(),
+                        intentToAlarm_Receiver,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(myPendingIntent);
 
 
+            }
         }
     }
 
@@ -279,13 +232,60 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        createLocationRequest();
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        createLocationRequest();
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (child.getValue(Message.class).getLat() != null) {
+
+                        Geofence geofence = new Geofence.Builder()
+                                .setRequestId(child.getValue(Message.class).getmName() + child.getValue(Message.class).getmMessageContent())
+                                .setCircularRegion(child.getValue(Message.class).getLat(),
+                                        child.getValue(Message.class).getLng(), RADIUS)
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+                                .setLoiteringDelay(1000 * 5)
+                                .setExpirationDuration(1000 * 60 * 60 * 24 * 365)
+                                .build();
+
+
+                        GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
+                                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                                .addGeofence(geofence)
+                                .build();
+
+                        Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);
+                        intentToAlarm_Receiver.setAction(LOCATION);
+                        intentToAlarm_Receiver.putExtra(MESSAGE_NAME, child.getValue(Message.class).getmName());
+                        intentToAlarm_Receiver.putExtra(MESSAGE_CONTENT, child.getValue(Message.class).getmMessageContent());
+                        intentToAlarm_Receiver.putExtra(CHANNEL_ID, child.getValue(Message.class).getmChannelId());
+
+                        PendingIntent geoPendingIntent = PendingIntent.getBroadcast(MyService.this,
+                                child.getValue(Message.class).getEventID(),
+                                intentToAlarm_Receiver,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        if (ActivityCompat.checkSelfPermission(MyService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                            return;
+                        }
+                        LocationServices.GeofencingApi.addGeofences(
+                                mGoogleApiClient,
+                                geofencingRequest,
+                                geoPendingIntent
+                        );
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -304,40 +304,14 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mLocationRequest.setInterval(1000 * 20);
         mLocationRequest.setFastestInterval(1000 * 5);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        Log.e("haaaa", "ici");
-
-        for (int i = 0; i < mLocationMessage.size(); i++){
-            if(mLocationMessage.get(i).getmLatLng().latitude == location.getLatitude()
-                && mLocationMessage.get(i).getmLatLng().longitude == location.getLongitude()){
-
-                Post post = new Post();
-                post.setMessage(mLocationMessage.get(i).getmMessageContent());
-                post.setChannelId(mLocationMessage.get(i).getmChannelId());
-
-                MattermostService sendPost = ServiceGenerator.RETROFIT.create(MattermostService.class);
-                Call<Post> callPost = sendPost.sendPost(("Bearer " + muserCredentials.getToken()), post);
-                callPost.enqueue(new Callback<Post>() {
-                    @Override
-                    public void onResponse(Call<Post> call, Response<Post> response) {
-                        if (response.isSuccessful()) {
-                            Log.e(TAG, "Post sended" + response.toString());
-
-                        } else {
-                            Log.e(TAG, String.valueOf("response was not sucessfullll" + response.toString() + response.headers()));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Post> call, Throwable t) {
-
-                    }
-                });
-            }
-        }
+        Log.e("haaaa", String.valueOf(mCurrentLocation.getLatitude() + "  " + mCurrentLocation.getLongitude()));
     }
 }

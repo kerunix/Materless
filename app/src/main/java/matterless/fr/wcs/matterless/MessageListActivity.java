@@ -101,17 +101,15 @@ public class MessageListActivity extends AppCompatActivity {
                         Intent intentToTimeMessage = new Intent(MessageListActivity.this, MessageSettingActivity.class);
                         startActivity(intentToTimeMessage);
                         dialog.dismiss();
-                        finish();
                     }
                 });
                 messageTypeDialog.setNegativeButton("Géolocalisé", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Intent intentToMessageSetting = new Intent(MessageListActivity.this, MapsActivity.class);
-                        startActivity(intentToMessageSetting);
+                        Intent intentToMessageSettingGeoLoc = new Intent(MessageListActivity.this, MessageSettingGeolocActivity.class);
+                        startActivity(intentToMessageSettingGeoLoc);
                         dialog.dismiss();
-                        finish();
                     }
                 });
                 messageTypeDialog.show();
