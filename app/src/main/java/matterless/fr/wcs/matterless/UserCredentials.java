@@ -80,7 +80,6 @@ public class UserCredentials {
 
     public static void toFile(Context context, String fileName, UserCredentials userCredentials) {
 
-
         try {
             fileOutputStream = context.openFileOutput(fileName, context.MODE_PRIVATE);
 

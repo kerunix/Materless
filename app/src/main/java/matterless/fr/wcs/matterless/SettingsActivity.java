@@ -1,6 +1,7 @@
 package matterless.fr.wcs.matterless;
 
 import android.*;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -202,6 +203,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         switch (v.getId()){
             case R.id.buttonLog:
                 if(editTextEmail != null && editTextPassword != null && muserCredentials == null){
+
+                    final ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage(getString(R.string.progress_dialog));
+                    progressDialog.show();
                     usersLogin = new UsersLogin(editTextEmail.getText().toString(), editTextPassword.getText().toString());
                     MattermostService mattermostService =
                             ServiceGenerator.RETROFIT.create(MattermostService.class);
@@ -254,6 +259,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                                                             imageViewProfilePicture.setImageBitmap(myBitmap);
                                                             Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
+                                                            progressDialog.dismiss();
                                                         }
 
 

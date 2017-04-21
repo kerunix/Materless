@@ -82,6 +82,7 @@ même entré directement sur le chat.</item>
     <string name="title_activity_maps">Map</string>
     <string name="alertDialogMessageTypeTitle">Quel type de message veux-tu créer ?</string>
     <string name="alertDialogMessageTypeContent">Tu peux créer un message dont l\'envoi sera basé sur ta position ou sur des critère d\'heure et de jours récurents</string>
+    <string name="progress_dialog">Chargement</string>
 
 
 </resources>
