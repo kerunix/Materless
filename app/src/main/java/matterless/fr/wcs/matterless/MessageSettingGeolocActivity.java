@@ -86,6 +86,7 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
 
 
             mFutureMessage = intent.getParcelableExtra("message");
+            mLatLng = new LatLng(intent.getDoubleExtra("LAT", 0), intent.getDoubleExtra("LNG", 0));
 
             mEditTextMessageName.setText(mFutureMessage.getmName());
             mEditTextMessageContent.setText(mFutureMessage.getmMessageContent());
@@ -184,7 +185,10 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                String finalContent = mEditTextMessageContent.getText().toString() + BOT_SIGNATURE;
+                String finalContent = mEditTextMessageContent.getText().toString();
+                if (!finalContent.contains(BOT_SIGNATURE)){
+                    finalContent = finalContent + BOT_SIGNATURE;
+                }
 
                 if (mLatLng.latitude == 0.0d ||  mFutureMessage.getmChannelId() == null|| mEditTextMessageName.getText().toString() == null || mEditTextMessageContent.getText().toString() == null) {
 
@@ -242,10 +246,14 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
         });
 
         SharedPreferences settings = getSharedPreferences(MapsActivity.LATLNG, 0);
-        mLatLng = new LatLng((double) settings.getFloat(MapsActivity.LAT, (float) 0), (double) settings.getFloat(MapsActivity.LNG, (float) -0));
-        SharedPreferences.Editor editor = settings.edit();
-        editor.clear();
-        editor.apply();
+        if (settings.getFloat(MapsActivity.LAT, (float) 0) != 0) {
+            mLatLng = new LatLng((double) settings.getFloat(MapsActivity.LAT, (float) 0), (double) settings.getFloat(MapsActivity.LNG, (float) -0));
+            SharedPreferences.Editor editor = settings.edit();
+            editor.clear();
+            editor.apply();
+        }
+
+
     }
 
     @Override

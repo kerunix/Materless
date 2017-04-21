@@ -34,34 +34,20 @@ class Message implements Parcelable {
         }
     }
 
-    protected Message(Parcel in) {
-        mName = in.readString();
-        mTimeMinute = in.readInt();
-        mTimeHour = in.readInt();
-        mChannelId = in.readString();
-        mChannelName = in.readString();
-        mMessageContent = in.readString();
-        mDays = in.createTypedArrayList(Day.CREATOR);
-    }
-
-    public static final Creator<Message> CREATOR = new Creator<Message>() {
-        @Override
-        public Message createFromParcel(Parcel in) {
-            return new Message(in);
-        }
-
-        @Override
-        public Message[] newArray(int size) {
-            return new Message[size];
-        }
-    };
-
     public String getmName() {
         return mName;
     }
 
     public void setmName(String mName) {
         this.mName = mName;
+    }
+
+    public int getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(int eventID) {
+        this.eventID = eventID;
     }
 
     public int getmTimeMinute() {
@@ -128,17 +114,32 @@ class Message implements Parcelable {
         Lng = lng;
     }
 
-    public int getEventID() {
-        return eventID;
-    }
-
-    public void setEventID(int eventID) {
-        this.eventID = eventID;
-    }
-
     public static Creator<Message> getCREATOR() {
         return CREATOR;
     }
+
+    protected Message(Parcel in) {
+        mName = in.readString();
+        eventID = in.readInt();
+        mTimeMinute = in.readInt();
+        mTimeHour = in.readInt();
+        mChannelId = in.readString();
+        mChannelName = in.readString();
+        mMessageContent = in.readString();
+        mDays = in.createTypedArrayList(Day.CREATOR);
+    }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
     public String getDaysEnabled(){
 
@@ -187,6 +188,7 @@ class Message implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mName);
+        dest.writeInt(eventID);
         dest.writeInt(mTimeMinute);
         dest.writeInt(mTimeHour);
         dest.writeString(mChannelId);

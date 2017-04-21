@@ -210,7 +210,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private void cancelAlarm(DataSnapshot dataSnapshot) {
         Message message = dataSnapshot.getValue(Message.class);
 
-        if (message.getDaysEnabled() != "null") {
+        if (message.getmDays() != null) {
 
             for (int i = 0; i < message.getmDays().size(); i++) {
                 Intent intentToAlarm_Receiver = new Intent(MyService.this, Alarm_Receiver.class);

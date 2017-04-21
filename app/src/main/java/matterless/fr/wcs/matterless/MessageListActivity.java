@@ -77,6 +77,8 @@ public class MessageListActivity extends AppCompatActivity {
 
                 intent.putExtra("message", message); //instance de message
                 intent.putExtra("ref", ref);
+                intent.putExtra("LAT", message.getLat());
+                intent.putExtra("LNG", message.getLng());
 
                 startActivity(intent);
             }

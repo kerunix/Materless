@@ -173,7 +173,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         * */
         final boolean[] _selections = {false, false, false, false, false, false, false};
 
-        if (intent.hasExtra("message")) {
+        if (intent.hasExtra("message") && mFutureMessage.getmDays() != null) {
 
             for (int i = 0; i < mFutureMessage.getmDays().size(); i++) {
 
@@ -304,7 +304,10 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
             public void onClick(View v) {
 
 
-                String finalContent = mEditTextMessageContent.getText().toString() + BOT_SIGNATURE;
+                String finalContent = mEditTextMessageContent.getText().toString();
+                if (!finalContent.contains(BOT_SIGNATURE)){
+                    finalContent = finalContent + BOT_SIGNATURE;
+                }
 
                 if (mFutureMessage.getDaysEnabled().length() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
 
