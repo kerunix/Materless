@@ -284,6 +284,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 
 
+                            } else{
+                                Toast.makeText(SettingsActivity.this, R.string.toastConnexionFailed, Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             }
                         }
 

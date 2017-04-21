@@ -45,6 +45,7 @@
     <string name="buttonLogOutText">Se déconnecter</string>
     <string name="buttonLogInText">Se connecter</string>
     <string name="email">Email</string>
+    <string name="toastConnexionFailed">échec de la connexion</string>
 
     <!-- DetaillActivity -->
 
