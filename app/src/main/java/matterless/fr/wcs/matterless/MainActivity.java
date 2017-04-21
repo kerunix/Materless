@@ -20,13 +20,12 @@ import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public final String FILE_NAME = "FILE_NAME";
+    public static final String FILE_NAME = "FILE_NAME";
     public static final String TAG = "MainActivity";
 
     private Button buttonConfigureEvents;
     private Button buttonMyProfile;
     private ImageView imageViewBigButtonMainActivity;
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
     private PulsatorLayout pulsator;
 
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         muserCredentials = new UserCredentials();
         muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
+
 
         if(muserCredentials == null){
             Intent intentToSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);

@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,8 +37,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
     public final String TAG = "SettingsActivity";
-    public final String FILE_NAME = "FILE_NAME";
     public static final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
+
 
     private TextView textViewUserName;
     private UsersLogin usersLogin;
@@ -44,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private UserCredentials muserCredentials;
     private TextView textViewEmail;
     private TextView textViewPassword;
+    private TextView textViewTitle;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonlog;
@@ -74,9 +77,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonTutorial.setOnClickListener(this);
         buttonlog.setOnClickListener(this);
         textViewUserName = (TextView) findViewById(R.id.textViewUserName);
+        textViewTitle = (TextView) findViewById(R.id.textViewConnectTitle);
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
+        muserCredentials = UserCredentials.fromFile(this, MainActivity.FILE_NAME);
+
 
         if(muserCredentials != null){
 
@@ -98,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 
                     } else {
-                        SettingsActivity.this.deleteFile(FILE_NAME);
+                        SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                         usersLogin = new UsersLogin(muserCredentials.getEmail(), muserCredentials.getPassword());
 
                         MattermostService mattermostService =
@@ -131,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                         imageUrl,
                                                         userProfile.getUsername());
 
-                                                UserCredentials.toFile(SettingsActivity.this, FILE_NAME, muserCredentials);
+                                                UserCredentials.toFile(SettingsActivity.this, MainActivity.FILE_NAME, muserCredentials);
 
                                                 MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
                                                 Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + authToken, imageUrl);
@@ -227,7 +232,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                     imageUrl,
                                                     userProfile.getUsername());
 
-                                            UserCredentials.toFile(SettingsActivity.this, FILE_NAME, muserCredentials);
+                                            UserCredentials.toFile(SettingsActivity.this, MainActivity.FILE_NAME, muserCredentials);
+
 
                                             Intent toService = new Intent(SettingsActivity.this, MyService.class);
                                             toService.setAction(MyService.INTENT_START_BOT);
@@ -285,6 +291,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 else if (authToken != null || muserCredentials != null){
 
+                    textViewTitle.setVisibility(View.VISIBLE);
+                    textViewEmail.setVisibility(View.VISIBLE);
                     textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
                     editTextEmail.setText(null);
@@ -294,7 +302,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     imageViewProfilePicture.setVisibility(View.INVISIBLE);
                     buttonlog.setText(R.string.buttonLogInText);
                     muserCredentials = null;
-                    SettingsActivity.this.deleteFile(FILE_NAME);
+                    SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                 }
                 break;
 
@@ -359,6 +367,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setProfileVisible(){
 
+        textViewTitle.setVisibility(View.GONE);
         textViewEmail.setVisibility(View.GONE);
         textViewPassword.setVisibility(View.GONE);
         editTextEmail.setVisibility(View.GONE);

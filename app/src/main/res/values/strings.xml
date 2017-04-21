@@ -45,7 +45,6 @@
     <string name="buttonLogOutText">Se déconnecter</string>
     <string name="buttonLogInText">Se connecter</string>
     <string name="email">Email</string>
-    <string name="password">Password</string>
 
     <!-- DetaillActivity -->
 
@@ -67,6 +66,8 @@
     <string name="tutorialTitle">Tutoriel</string>
     <string name="buttonTutorialText">Tutoriel</string>
     <string name="comprisButton">Compris !</string>
+    <string name="IdMattermostTitle">Entre tes identifiants \n Mattermost</string>
+    <string name="passwordtxt">Mot de passe</string>
 
     <string-array name="tutorialArray">
         <item>Cet application te permet de créer des messages qui seront envoyés sur le chat Mattermost de ton choix, aux jours et heures que tu auras configuré.</item>

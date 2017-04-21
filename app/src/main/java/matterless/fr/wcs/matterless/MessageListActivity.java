@@ -23,8 +23,6 @@ import java.util.List;
 public class MessageListActivity extends AppCompatActivity {
 
 
-    public final String FILE_NAME = "FILE_NAME";
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
     private ListView mListViewMessage;
@@ -53,7 +51,7 @@ public class MessageListActivity extends AppCompatActivity {
         super.onStart();
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MessageListActivity.this, FILE_NAME);
+        muserCredentials = UserCredentials.fromFile(MessageListActivity.this, MainActivity.FILE_NAME);
 
         mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
 
@@ -74,9 +72,11 @@ public class MessageListActivity extends AppCompatActivity {
                 Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
                 Message message = (Message) mAdapter.getItem(position);
 
-                String ref = mAdapter.getmKey(position); //ref de l'item dans la database
+
+                String ref = mAdapter.getmKey(position);  //ID de l'item dans Firebase
+
                 intent.putExtra("message", message); //instance de message
-                intent.putExtra("ref", ref); //position dans la liste
+                intent.putExtra("ref", ref);
 
                 startActivity(intent);
             }

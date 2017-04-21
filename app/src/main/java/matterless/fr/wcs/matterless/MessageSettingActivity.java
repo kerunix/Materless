@@ -41,8 +41,9 @@ import retrofit2.Response;
 public class MessageSettingActivity extends AppCompatActivity /*implements View.OnClickListener*/ {
 
 
-    public final String FILE_NAME = "FILE_NAME";
-    public static final String BOT_SIGNATURE = " #Matterless ";
+
+    public static final String BOT_SIGNATURE = " #Matterless";
+
 
     private Intent intent;
     private String ref;
@@ -65,7 +66,6 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
     private int hour;
     private int minute;
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
     @Override
@@ -336,7 +336,8 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
         super.onStart();
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MessageSettingActivity.this, FILE_NAME);
+        muserCredentials = UserCredentials.fromFile(MessageSettingActivity.this, MainActivity.FILE_NAME);
+
 
         mRef = database.getReference("Messages/" + muserCredentials.getUserID());
 

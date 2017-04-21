@@ -24,7 +24,6 @@ import static android.R.id.message;
 
 public class MessageDetailsActivity extends AppCompatActivity {
 
-    public final String FILE_NAME = "FILE_NAME";
 
     private Intent intent;
 
@@ -39,7 +38,6 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private Button buttonMessageDetailsEdit;
     private Button buttonMessageDetailsDelete;
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
 
@@ -116,7 +114,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
         super.onStart();
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MessageDetailsActivity.this, FILE_NAME);
+        muserCredentials = UserCredentials.fromFile(MessageDetailsActivity.this, MainActivity.FILE_NAME);
+
     }
 
     @Override

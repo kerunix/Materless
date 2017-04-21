@@ -26,9 +26,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
 
 
     public static final String TAG = "Alarm_Receiver";
-    public final String FILE_NAME = "FILE_NAME";
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -44,7 +42,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
             Log.e(TAG, "reached the alarm receiver");
 
             muserCredentials = new UserCredentials();
-            muserCredentials = UserCredentials.fromFile(context, FILE_NAME);
+            muserCredentials = UserCredentials.fromFile(context, MainActivity.FILE_NAME);
 
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -95,7 +93,7 @@ public class Alarm_Receiver extends BroadcastReceiver {
             Log.e(TAG, "reached the alarm receiver");
 
             muserCredentials = new UserCredentials();
-            muserCredentials = UserCredentials.fromFile(context, FILE_NAME);
+            muserCredentials = UserCredentials.fromFile(context, MainActivity.FILE_NAME);
 
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

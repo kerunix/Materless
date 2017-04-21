@@ -80,6 +80,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        muserCredentials = new UserCredentials();
+        muserCredentials = UserCredentials.fromFile(this, MainActivity.FILE_NAME);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -305,6 +307,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mLocationRequest.setFastestInterval(1000 * 5);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
