@@ -248,14 +248,14 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                                 .setRequestId(child.getValue(Message.class).getmName() + child.getValue(Message.class).getmMessageContent())
                                 .setCircularRegion(child.getValue(Message.class).getLat(),
                                         child.getValue(Message.class).getLng(), RADIUS)
-                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                                 .setLoiteringDelay(1000 * 5)
                                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                                 .build();
 
 
                         GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
-                                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
+                                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
                                 .addGeofence(geofence)
                                 .build();
 
