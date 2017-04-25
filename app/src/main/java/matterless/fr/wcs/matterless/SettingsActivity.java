@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         checkBoxTermsOfUse = (CheckBox) findViewById(R.id.checkBoxTermsOfUse);
+        checkBoxTermsOfUse.setMovementMethod(LinkMovementMethod.getInstance());
         buttonlog = (Button) findViewById(R.id.buttonLog);
         buttonTutorial= (Button) findViewById(R.id.buttonTutorial);
         buttonTutorial.setOnClickListener(this);
@@ -312,6 +314,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     muserCredentials = null;
                     SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                 }
+
+                else{
+                    Toast.makeText(this, R.string.toast_message_empty, Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case R.id.buttonTutorial :

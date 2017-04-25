@@ -88,7 +88,7 @@ même entré directement sur le chat.</item>
     <string name="sended">envoyé</string>
     <string name="sended_plural"> envoyés</string>
     <string name="and">et</string>
-    <string name="TermOfuse">Je reconnais être en accord avec les confitions d\'utilisation</string>
+    <string name="TermOfuse">Je reconnais être en accord avec les <a href="https://about.mattermost.com/default-terms/">confitions d\'utilisation</a> </string>
 
 
 </resources>
