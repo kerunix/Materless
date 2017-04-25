@@ -84,6 +84,11 @@ même entré directement sur le chat.</item>
     <string name="alertDialogMessageTypeTitle">Quel type de message veux-tu créer ?</string>
     <string name="alertDialogMessageTypeContent">Tu peux créer un message dont l\'envoi sera basé sur ta position ou sur des critère d\'heure et de jours récurents</string>
     <string name="progress_dialog">Chargement</string>
+    <string name="and_other">autres messages</string>
+    <string name="sended">envoyé</string>
+    <string name="sended_plural"> envoyés</string>
+    <string name="and">et</string>
+    <string name="TermOfuse">Je reconnais être en accord avec les confitions d\'utilisation</string>
 
 
 </resources>

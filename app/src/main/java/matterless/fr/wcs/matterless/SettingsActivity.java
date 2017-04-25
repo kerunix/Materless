@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,11 +46,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private UsersLogin usersLogin;
     private UserProfile userProfile;
     private UserCredentials muserCredentials;
-    private TextView textViewEmail;
-    private TextView textViewPassword;
     private TextView textViewTitle;
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private CheckBox checkBoxTermsOfUse;
     private Button buttonlog;
     private Button buttonTutorial;
     private String authToken;
@@ -69,10 +69,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
 
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
-        textViewEmail = (TextView) findViewById(R.id.textViewEmail);
-        textViewPassword = (TextView) findViewById(R.id.textViewPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        checkBoxTermsOfUse = (CheckBox) findViewById(R.id.checkBoxTermsOfUse);
         buttonlog = (Button) findViewById(R.id.buttonLog);
         buttonTutorial= (Button) findViewById(R.id.buttonTutorial);
         buttonTutorial.setOnClickListener(this);
@@ -202,7 +201,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonLog:
-                if(editTextEmail != null && editTextPassword != null && muserCredentials == null){
+                if(editTextEmail != null && editTextPassword != null && muserCredentials == null && checkBoxTermsOfUse.isChecked()){
 
                     final ProgressDialog progressDialog = new ProgressDialog(this);
                     progressDialog.setMessage(getString(R.string.progress_dialog));
@@ -301,12 +300,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 else if (authToken != null || muserCredentials != null){
 
                     textViewTitle.setVisibility(View.VISIBLE);
-                    textViewEmail.setVisibility(View.VISIBLE);
-                    textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
                     editTextEmail.setText(null);
                     editTextPassword.setVisibility(View.VISIBLE);
                     editTextPassword.setText(null);
+                    checkBoxTermsOfUse.setVisibility(View.VISIBLE);
+                    checkBoxTermsOfUse.setChecked(false);
                     textViewUserName.setVisibility(View.INVISIBLE);
                     imageViewProfilePicture.setVisibility(View.INVISIBLE);
                     buttonlog.setText(R.string.buttonLogInText);
@@ -377,10 +376,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void setProfileVisible(){
 
         textViewTitle.setVisibility(View.GONE);
-        textViewEmail.setVisibility(View.GONE);
-        textViewPassword.setVisibility(View.GONE);
         editTextEmail.setVisibility(View.GONE);
         editTextPassword.setVisibility(View.GONE);
+        checkBoxTermsOfUse.setVisibility(View.GONE);
         textViewUserName.setVisibility(View.VISIBLE);
         imageViewProfilePicture.setVisibility(View.VISIBLE);
         buttonlog.setText(R.string.buttonLogOutText);

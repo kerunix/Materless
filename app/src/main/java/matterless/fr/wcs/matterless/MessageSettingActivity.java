@@ -309,7 +309,7 @@ public class MessageSettingActivity extends AppCompatActivity /*implements View.
                     finalContent = finalContent + BOT_SIGNATURE;
                 }
 
-                if (mFutureMessage.getDaysEnabled().length() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0) {
+                if (mFutureMessage.getDaysEnabled().length() == 0 || mEditTextMessageName.getText().toString().length() == 0 || mEditTextMessageContent.getText().toString().length() == 0 ||mFutureMessage.getmChannelName() == null) {
 
                     Toast.makeText(MessageSettingActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }

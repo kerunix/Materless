@@ -190,7 +190,7 @@ public class MessageSettingGeolocActivity extends AppCompatActivity {
                     finalContent = finalContent + BOT_SIGNATURE;
                 }
 
-                if (mLatLng.latitude == 0.0d ||  mFutureMessage.getmChannelId() == null|| mEditTextMessageName.getText().toString() == null || mEditTextMessageContent.getText().toString() == null) {
+                if (mLatLng.latitude == 0.0d ||  mFutureMessage.getmChannelId() == null|| mEditTextMessageName.getText().toString() == null || mEditTextMessageContent.getText().toString() == null || mFutureMessage.getmChannelName() == null) {
 
                     Toast.makeText(MessageSettingGeolocActivity.this, R.string.toastComplete, Toast.LENGTH_SHORT).show();
                 }

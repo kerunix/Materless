@@ -22,6 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -247,14 +248,14 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                                 .setRequestId(child.getValue(Message.class).getmName() + child.getValue(Message.class).getmMessageContent())
                                 .setCircularRegion(child.getValue(Message.class).getLat(),
                                         child.getValue(Message.class).getLng(), RADIUS)
-                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                                 .setLoiteringDelay(1000 * 5)
-                                .setExpirationDuration(1000 * 60 * 60 * 24 * 365)
+                                .setExpirationDuration(Geofence.NEVER_EXPIRE)
                                 .build();
 
 
                         GeofencingRequest geofencingRequest = new GeofencingRequest.Builder()
-                                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
                                 .addGeofence(geofence)
                                 .build();
 
