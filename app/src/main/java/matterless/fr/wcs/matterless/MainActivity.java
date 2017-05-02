@@ -50,20 +50,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         botLaunched = true;
 
         muserCredentials = new UserCredentials();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
-
-
         if(muserCredentials == null){
             Intent intentToSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intentToSettingsActivity);
         }
-
-        else{
-            Intent toService = new Intent(MainActivity.this, MyService.class);
-            toService.setAction(MyService.INTENT_START_BOT);
-            startService(toService);
-        }
-
     }
 
     @Override
