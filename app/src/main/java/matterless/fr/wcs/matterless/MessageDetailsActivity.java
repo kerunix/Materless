@@ -3,9 +3,12 @@ package matterless.fr.wcs.matterless;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static android.R.id.message;
 
@@ -38,7 +42,6 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private Button buttonMessageDetailsEdit;
     private Button buttonMessageDetailsDelete;
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
 
@@ -69,20 +72,36 @@ public class MessageDetailsActivity extends AppCompatActivity {
 
         final Message message = intent.getParcelableExtra("message");
         ref = intent.getStringExtra("ref");
-
+        message.setLat(intent.getDoubleExtra("LAT", 0));
+        message.setLng(intent.getDoubleExtra("LNG", 0));
         textViewMessageDetailsTitle.setText(message.getmName());
-        textViewMessageDetailsDays.setText(message.getDaysEnabled());
-        textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
         textViewMessageDetailsContent.setText(message.getmMessageContent());
         textViewChannel.setText(message.getmChannelName());
+
+        if (message.getmDays() != null) {
+            textViewMessageDetailsDays.setText(message.getDaysEnabled());
+            textViewMessageDetailsHour.setText(message.getmTimeHour() + ":" + message.getmTimeMinute());
+
+
+        }
 
         buttonMessageDetailsEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MessageDetailsActivity.this, MessageSettingActivity.class);
-                intent.putExtra("message", message);
-                intent.putExtra("ref", ref);
-                startActivity(intent);
+                if (message.getmDays() != null) {
+                    Intent intent = new Intent(MessageDetailsActivity.this, MessageSettingActivity.class);
+                    intent.putExtra("message", message);
+                    intent.putExtra("ref", ref);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(MessageDetailsActivity.this, MessageSettingGeolocActivity.class);
+                    intent.putExtra("message", message);
+                    intent.putExtra("ref", ref);
+                    intent.putExtra("LAT", message.getLat());
+                    intent.putExtra("LNG", message.getLng());
+                    startActivity(intent);
+                }
+
                 finish();
             }
         });
@@ -115,7 +134,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
         super.onStart();
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MessageDetailsActivity.this);
+        muserCredentials = UserCredentials.fromFile(MessageDetailsActivity.this, MainActivity.FILE_NAME);
+
     }
 
     @Override

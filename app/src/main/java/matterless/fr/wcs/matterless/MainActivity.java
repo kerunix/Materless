@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonConfigureEvents;
     private Button buttonMyProfile;
     private ImageView imageViewBigButtonMainActivity;
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
     private PulsatorLayout pulsator;
 
@@ -51,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         botLaunched = true;
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MainActivity.this);
+        muserCredentials = UserCredentials.fromFile(this, FILE_NAME);
+
 
         if(muserCredentials == null){
             Intent intentToSettingsActivity = new Intent(MainActivity.this, SettingsActivity.class);

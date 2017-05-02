@@ -49,13 +49,17 @@ public class UserCredentials {
         return this.userID+ "|"+this.email+ "|"+this.password+"|"+this.getToken()+"|"+this.imageUrl+"|"+this.userName;
     }
 
-    public static UserCredentials fromFile(Context context) {
+
+    public static UserCredentials fromFile(Context context, String fileName) {
+
 
         UserCredentials userCredentials = null;
         FileInputStream fileInputStream;
 
         try {
-            fileInputStream = context.openFileInput(MainActivity.FILE_NAME);
+
+            fileInputStream = context.openFileInput(fileName);
+
             int c;
             StringBuilder sb = new StringBuilder();
             while ((c = fileInputStream.read()) != -1) {
@@ -73,11 +77,12 @@ public class UserCredentials {
         return userCredentials;
     }
 
-    public static void toFile(Context context, UserCredentials userCredentials) {
 
+    public static void toFile(Context context, String fileName, UserCredentials userCredentials) {
 
         try {
-            fileOutputStream = context.openFileOutput(MainActivity.FILE_NAME, context.MODE_PRIVATE);
+            fileOutputStream = context.openFileOutput(fileName, context.MODE_PRIVATE);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

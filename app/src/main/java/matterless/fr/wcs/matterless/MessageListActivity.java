@@ -1,6 +1,9 @@
 package matterless.fr.wcs.matterless;
 
+import android.app.Notification;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,7 +23,6 @@ import java.util.List;
 public class MessageListActivity extends AppCompatActivity {
 
 
-    private FileInputStream mfileInputStream;
     private UserCredentials muserCredentials;
 
     private ListView mListViewMessage;
@@ -49,7 +51,7 @@ public class MessageListActivity extends AppCompatActivity {
         super.onStart();
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(MessageListActivity.this);
+        muserCredentials = UserCredentials.fromFile(MessageListActivity.this, MainActivity.FILE_NAME);
 
         mRef = mDatabase.getReference("Messages/"+muserCredentials.getUserID());
 
@@ -70,9 +72,13 @@ public class MessageListActivity extends AppCompatActivity {
                 Intent intent = new Intent(MessageListActivity.this, MessageDetailsActivity.class);
                 Message message = (Message) mAdapter.getItem(position);
 
+
                 String ref = mAdapter.getmKey(position);  //ID de l'item dans Firebase
+
                 intent.putExtra("message", message); //instance de message
                 intent.putExtra("ref", ref);
+                intent.putExtra("LAT", message.getLat());
+                intent.putExtra("LNG", message.getLng());
 
                 startActivity(intent);
             }
@@ -85,8 +91,30 @@ public class MessageListActivity extends AppCompatActivity {
         buttonAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentToMessageSetting = new Intent(MessageListActivity.this, MessageSettingActivity.class);
-                startActivity(intentToMessageSetting);
+
+                final AlertDialog.Builder messageTypeDialog = new AlertDialog.Builder(MessageListActivity.this);
+
+                messageTypeDialog.setTitle(R.string.alertDialogMessageTypeTitle);
+                messageTypeDialog.setMessage(R.string.alertDialogMessageTypeContent);
+                messageTypeDialog.setPositiveButton("Ponctuel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intentToTimeMessage = new Intent(MessageListActivity.this, MessageSettingActivity.class);
+                        startActivity(intentToTimeMessage);
+                        dialog.dismiss();
+                    }
+                });
+                messageTypeDialog.setNegativeButton("Géolocalisé", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intentToMessageSettingGeoLoc = new Intent(MessageListActivity.this, MessageSettingGeolocActivity.class);
+                        startActivity(intentToMessageSettingGeoLoc);
+                        dialog.dismiss();
+                    }
+                });
+                messageTypeDialog.show();
             }
         });
     }

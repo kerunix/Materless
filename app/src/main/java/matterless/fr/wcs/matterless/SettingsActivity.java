@@ -1,14 +1,20 @@
 package matterless.fr.wcs.matterless;
 
+import android.*;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,21 +40,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public final String API_BASE_URL = "https://chat.wildcodeschool.fr/api/v3/";
     public final String TAG = "SettingsActivity";
+    public static final int MY_PERMISSIONS_REQUEST_TO_LOCATION = 1;
+
 
     private TextView textViewUserName;
     private UsersLogin usersLogin;
     private UserProfile userProfile;
     private UserCredentials muserCredentials;
-    private TextView textViewEmail;
-    private TextView textViewPassword;
     private TextView textViewTitle;
     private EditText editTextEmail;
     private EditText editTextPassword;
+    private CheckBox checkBoxTermsOfUse;
     private Button buttonlog;
     private Button buttonTutorial;
     private String authToken;
-    private FileOutputStream mfileOutputStream;
-    private FileInputStream mfileInputStream;
 
     private ImageView imageViewProfilePicture;
 
@@ -57,11 +62,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(SettingsActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_TO_LOCATION);
+        }
+
         imageViewProfilePicture = (ImageView) findViewById(R.id.imageViewProfilePicture);
-        textViewEmail = (TextView) findViewById(R.id.textViewEmail);
-        textViewPassword = (TextView) findViewById(R.id.textViewPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        checkBoxTermsOfUse = (CheckBox) findViewById(R.id.checkBoxTermsOfUse);
+        checkBoxTermsOfUse.setMovementMethod(LinkMovementMethod.getInstance());
         buttonlog = (Button) findViewById(R.id.buttonLog);
         buttonTutorial= (Button) findViewById(R.id.buttonTutorial);
         buttonTutorial.setOnClickListener(this);
@@ -70,7 +82,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         textViewTitle = (TextView) findViewById(R.id.textViewConnectTitle);
 
         muserCredentials = new UserCredentials();
-        muserCredentials = UserCredentials.fromFile(SettingsActivity.this);
+        muserCredentials = UserCredentials.fromFile(this, MainActivity.FILE_NAME);
+
 
         if(muserCredentials != null){
 
@@ -119,13 +132,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                 userProfile = responseUser.body();
                                                 String imageUrl = API_BASE_URL + "users/" +userProfile.getId() + "/image?time=" + userProfile.getLastPictureUpdate();
 
-                                                UserCredentials userCredentials = new UserCredentials(userProfile.getId(), userProfile.getEmail(),
+                                                UserCredentials muserCredentials = new UserCredentials(userProfile.getId(), userProfile.getEmail(),
                                                         editTextPassword.getText().toString(),
                                                         authToken,
                                                         imageUrl,
                                                         userProfile.getUsername());
 
-                                                UserCredentials.toFile(SettingsActivity.this, muserCredentials);
+                                                UserCredentials.toFile(SettingsActivity.this, MainActivity.FILE_NAME, muserCredentials);
 
                                                 MattermostService getUserImageUrl = ServiceGenerator.RETROFIT.create(MattermostService.class);
                                                 Call<ResponseBody> callImageUrl = getUserImageUrl.getProfilePicture( "Bearer " + authToken, imageUrl);
@@ -190,7 +203,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.buttonLog:
-                if(editTextEmail != null && editTextPassword != null && muserCredentials == null){
+                if(editTextEmail != null && editTextPassword != null && muserCredentials == null && checkBoxTermsOfUse.isChecked()){
+
+                    final ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage(getString(R.string.progress_dialog));
+                    progressDialog.show();
                     usersLogin = new UsersLogin(editTextEmail.getText().toString(), editTextPassword.getText().toString());
                     MattermostService mattermostService =
                             ServiceGenerator.RETROFIT.create(MattermostService.class);
@@ -221,7 +238,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                     imageUrl,
                                                     userProfile.getUsername());
 
-                                            UserCredentials.toFile(SettingsActivity.this, muserCredentials);
+                                            UserCredentials.toFile(SettingsActivity.this, MainActivity.FILE_NAME, muserCredentials);
+
 
                                             Intent toService = new Intent(SettingsActivity.this, MyService.class);
                                             toService.setAction(MyService.INTENT_START_BOT);
@@ -242,6 +260,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                                             Bitmap myBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                                                             imageViewProfilePicture.setImageBitmap(myBitmap);
                                                             Toast.makeText(SettingsActivity.this, R.string.logging_success, Toast.LENGTH_SHORT).show();
+                                                            progressDialog.dismiss();
                                                         }
 
 
@@ -266,6 +285,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 
 
+                            } else{
+                                Toast.makeText(SettingsActivity.this, R.string.toastConnexionFailed, Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             }
                         }
 
@@ -280,18 +302,23 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 else if (authToken != null || muserCredentials != null){
 
                     textViewTitle.setVisibility(View.VISIBLE);
-                    textViewEmail.setVisibility(View.VISIBLE);
-                    textViewPassword.setVisibility(View.VISIBLE);
                     editTextEmail.setVisibility(View.VISIBLE);
                     editTextEmail.setText(null);
                     editTextPassword.setVisibility(View.VISIBLE);
                     editTextPassword.setText(null);
+                    checkBoxTermsOfUse.setVisibility(View.VISIBLE);
+                    checkBoxTermsOfUse.setChecked(false);
                     textViewUserName.setVisibility(View.INVISIBLE);
                     imageViewProfilePicture.setVisibility(View.INVISIBLE);
                     buttonlog.setText(R.string.buttonLogInText);
                     muserCredentials = null;
                     SettingsActivity.this.deleteFile(MainActivity.FILE_NAME);
                 }
+
+                else{
+                    Toast.makeText(this, R.string.toast_message_empty, Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case R.id.buttonTutorial :
@@ -356,10 +383,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private void setProfileVisible(){
 
         textViewTitle.setVisibility(View.GONE);
-        textViewEmail.setVisibility(View.GONE);
-        textViewPassword.setVisibility(View.GONE);
         editTextEmail.setVisibility(View.GONE);
         editTextPassword.setVisibility(View.GONE);
+        checkBoxTermsOfUse.setVisibility(View.GONE);
         textViewUserName.setVisibility(View.VISIBLE);
         imageViewProfilePicture.setVisibility(View.VISIBLE);
         buttonlog.setText(R.string.buttonLogOutText);

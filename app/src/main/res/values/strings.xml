@@ -34,6 +34,10 @@
     <string name="buttonTimePickerText">Heure</string>
     <string name="buttonSelectDayText">Jours</string>
 
+    <!-- MessageSettingsActivity(Geoloc) -->
+    
+    <string name="Geolocalisation">Choisir/Modifier sa géolocalisation</string>
+
     <!-- SettingsActivity -->
 
     <string name="textViewUserNameText">Username</string>
@@ -41,6 +45,7 @@
     <string name="buttonLogOutText">Se déconnecter</string>
     <string name="buttonLogInText">Se connecter</string>
     <string name="email">Email</string>
+    <string name="toastConnexionFailed">échec de la connexion</string>
 
     <!-- DetaillActivity -->
 
@@ -58,7 +63,7 @@
     <string name="choseChannelButtonText">Choisis ton canal de discussion</string>
 
     <string name="logging_success">Connexion réussie</string>
-  
+
     <string name="tutorialTitle">Tutoriel</string>
     <string name="buttonTutorialText">Tutoriel</string>
     <string name="comprisButton">Compris !</string>
@@ -75,6 +80,15 @@ ou tu peux en ajouter en cliquant sur le bouton correspondant.</item>
         <item>N\'hésite pas à être inventif dans tes messages, tu peux y mettre des liens vers du contenu (GIFs, Vidéos, Sites etc), il sera affiché comme si tu l\'avais toi
 même entré directement sur le chat.</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="alertDialogMessageTypeTitle">Quel type de message veux-tu créer ?</string>
+    <string name="alertDialogMessageTypeContent">Tu peux créer un message dont l\'envoi sera basé sur ta position ou sur des critère d\'heure et de jours récurents</string>
+    <string name="progress_dialog">Chargement</string>
+    <string name="and_other">autres messages</string>
+    <string name="sended">envoyé</string>
+    <string name="sended_plural"> envoyés</string>
+    <string name="and">et</string>
+    <string name="TermOfuse">Je reconnais être en accord avec les <a href="https://about.mattermost.com/default-terms/">confitions d\'utilisation</a> </string>
 
 
 </resources>
